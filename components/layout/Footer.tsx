@@ -1,11 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { footerLinks, newsletterIssues, siteConfig, socialLinks } from "@/lib/data";
+import { usePosts, useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import DynamicIcon from "@/components/ui/IconMap";
 
 export default function Footer() {
-  const recent = newsletterIssues.slice(0, 2);
+  const posts = usePosts();
+  const siteConfig = useSiteConfig();
+  const { settings } = useSiteData();
+  const { footerLinks, socialLinks } = settings;
+  const recent = posts.slice(0, 2);
   const year = new Date().getFullYear();
 
   return (
@@ -17,8 +23,7 @@ export default function Footer() {
               Pixel<span className="text-primary">Noryx</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              All the latest news and creative articles for developers who ship
-              faster.
+              {siteConfig.description}
             </p>
             <div className="mt-4 flex gap-3">
               {socialLinks.map((s) => (
@@ -84,7 +89,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/50 sm:flex-row">
-          <p>© {year} PixelNoryx. All Rights Reserved.</p>
+          <p>© {year} {siteConfig.name}. All Rights Reserved.</p>
           <div className="flex gap-6">
             {footerLinks.legal.map((l) => (
               <Link key={l.label} href={l.href} className="hover:text-primary">

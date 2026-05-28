@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,8 +30,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('PixelNoryx Admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->defaultThemeMode(ThemeMode::Light)
+            ->darkMode(false)
             ->colors([
-                'primary' => Color::Red,
+                'primary' => Color::hex('#E63946'),
+                'gray' => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -3,22 +3,23 @@
 import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { newsletterIssues, newsletterTopics } from "@/lib/data";
-import type { NewsletterTopic } from "@/lib/types";
+import { usePosts, useSiteData } from "@/components/providers/SiteDataProvider";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
 import { cn } from "@/lib/utils";
 
 function ArchiveGrid() {
   const searchParams = useSearchParams();
-  const topicParam = searchParams.get("topic") as NewsletterTopic | null;
+  const posts = usePosts();
+  const { topics } = useSiteData();
+  const topicParam = searchParams.get("topic");
 
   const filtered = useMemo(() => {
-    if (!topicParam || !newsletterTopics.includes(topicParam)) {
-      return newsletterIssues;
+    if (!topicParam || !topics.includes(topicParam)) {
+      return posts;
     }
-    return newsletterIssues.filter((i) => i.topic === topicParam);
-  }, [topicParam]);
+    return posts.filter((i) => i.topic === topicParam);
+  }, [topicParam, posts, topics]);
 
   return (
     <>
@@ -34,7 +35,7 @@ function ArchiveGrid() {
         >
           All
         </Link>
-        {newsletterTopics.map((t) => (
+        {topics.map((t) => (
           <Link
             key={t}
             href={`/archive?topic=${encodeURIComponent(t)}`}

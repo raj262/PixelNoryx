@@ -13,6 +13,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/categories', [PostController::class, 'categories']);
 
     Route::get('/settings', [SiteController::class, 'settings']);
+    Route::get('/bootstrap', [SiteController::class, 'bootstrap']);
     Route::get('/seo', [SiteController::class, 'seo']);
     Route::get('/faqs', [SiteController::class, 'faqs']);
     Route::get('/testimonials', [SiteController::class, 'testimonials']);

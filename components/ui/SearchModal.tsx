@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { newsletterIssues } from "@/lib/data";
+import { usePosts } from "@/components/providers/SiteDataProvider";
 
 interface SearchModalProps {
   open: boolean;
@@ -12,6 +12,7 @@ interface SearchModalProps {
 }
 
 export default function SearchModal({ open, onClose }: SearchModalProps) {
+  const newsletterIssues = usePosts();
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -23,7 +24,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
         issue.excerpt.toLowerCase().includes(q) ||
         issue.topic.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, newsletterIssues]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {

@@ -50,7 +50,7 @@ const sizeStyles: Record<
 };
 
 interface AdSlotProps {
-  ad: AdPlacement;
+  ad?: AdPlacement;
   className?: string;
   animate?: boolean;
   index?: number;
@@ -62,6 +62,10 @@ export default function AdSlot({
   animate = false,
   index = 0,
 }: AdSlotProps) {
+  if (!ad) {
+    return null;
+  }
+
   const styles = sizeStyles[ad.size];
   const gradient =
     ad.gradient != null

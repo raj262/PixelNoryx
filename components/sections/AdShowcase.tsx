@@ -1,11 +1,11 @@
 "use client";
 
-import { adPlacements } from "@/lib/ads";
 import AdSlot from "@/components/ads/AdSlot";
+import { useAds } from "@/components/providers/SiteDataProvider";
 import AnimateIn from "@/components/ui/AnimateIn";
 
 interface AdShowcaseProps {
-  placementKey: keyof typeof adPlacements;
+  placementKey: string;
   label?: string;
 }
 
@@ -13,6 +13,7 @@ export default function AdShowcase({
   placementKey,
   label = "Advertisement",
 }: AdShowcaseProps) {
+  const adPlacements = useAds();
   const ad = adPlacements[placementKey];
   if (!ad) return null;
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ClientOnly from "@/components/ui/ClientOnly";
 import { Menu, X, Search, ChevronDown } from "lucide-react";
-import { navLinks, categoryNav } from "@/lib/data";
+import { useCategoryNav, useSiteData } from "@/components/providers/SiteDataProvider";
 import SearchModal from "@/components/ui/SearchModal";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,9 @@ export default function Navbar() {
   const [catOpen, setCatOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { settings } = useSiteData();
+  const navLinks = settings.navLinks;
+  const categoryNav = useCategoryNav();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);

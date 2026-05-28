@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AdPlacement;
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Post;
 use App\Models\SiteSetting;
+use App\Support\SiteContent;
 use App\Models\Subscriber;
 use App\Models\Tag;
 use App\Models\Testimonial;
@@ -93,14 +95,83 @@ class ContentSeeder extends Seeder
             $post->tags()->syncWithoutDetaching([$tag->id]);
         }
 
-        Faq::firstOrCreate(
-            ['question' => 'How often do you send the newsletter?'],
+        $faqs = [
             [
-                'answer' => 'Every Tuesday morning (UTC).',
-                'sort_order' => 1,
-                'is_active' => true,
-            ]
-        );
+                'question' => 'How often do you send the newsletter?',
+                'answer' => 'Every Tuesday morning (UTC). Occasional bonus issues when we launch a major guide or product.',
+            ],
+            [
+                'question' => 'Is it really free?',
+                'answer' => 'Yes. Core issues are free forever. We may introduce optional paid deep-dives later — subscribers get first notice.',
+            ],
+            [
+                'question' => 'Can I read past issues?',
+                'answer' => 'All published issues live in the Archive. Browse by topic or search any keyword.',
+            ],
+            [
+                'question' => 'How do I unsubscribe?',
+                'answer' => 'One click at the bottom of every email. No guilt trips, no hoops.',
+            ],
+            [
+                'question' => 'Do you sell my email?',
+                'answer' => 'Never. Your email is only used for PixelNoryx newsletter and rare product updates you opt into.',
+            ],
+            [
+                'question' => 'Can I sponsor an issue?',
+                'answer' => 'We offer limited sponsor slots for dev tools and courses. Contact hello@pixelnoryx.com for rates.',
+            ],
+            [
+                'question' => 'What topics do you cover?',
+                'answer' => 'React, Laravel, SaaS, UI/UX, ecommerce, APIs, startups, and frontend architecture — practical tutorials and shipping advice, not hype.',
+            ],
+            [
+                'question' => 'How long does each issue take to read?',
+                'answer' => 'Most issues are designed as 5-minute reads with optional deep-dive links if you want to go further.',
+            ],
+            [
+                'question' => 'Can I reply to the newsletter?',
+                'answer' => 'Yes. Replies go straight to our inbox. We read every message and often feature reader questions in future issues.',
+            ],
+            [
+                'question' => 'Do you offer an RSS feed?',
+                'answer' => 'An RSS feed for the public archive is on our roadmap. Subscribe by email today and we will notify you when RSS launches.',
+            ],
+            [
+                'question' => 'Can I contribute or guest post?',
+                'answer' => 'We occasionally publish guest guides from experienced builders. Pitch your idea at hello@pixelnoryx.com with an outline and links to your work.',
+            ],
+            [
+                'question' => 'Who writes PixelNoryx?',
+                'answer' => 'PixelNoryx is edited by Rajesh Verma, a full-stack developer focused on ecommerce systems and teaching developers to ship faster.',
+            ],
+            [
+                'question' => 'How do sponsored posts work?',
+                'answer' => 'Sponsored slots are clearly labeled. We only partner with tools we would recommend to our own team. Ad placements on the site are scheduled with start and end dates.',
+            ],
+            [
+                'question' => 'Is there a community or Discord?',
+                'answer' => 'Not yet — we are building a small community for subscribers. Join the newsletter to get early access when it opens.',
+            ],
+            [
+                'question' => 'What if I miss an issue?',
+                'answer' => 'Visit the Archive anytime. Issues stay online and you can filter by category such as React, Laravel, or SaaS.',
+            ],
+            [
+                'question' => 'How do I advertise on the website?',
+                'answer' => 'Ad placements (header, sidebar, mid-page, footer) can be booked through our team. Use the contact form or email hello@pixelnoryx.com with your campaign dates.',
+            ],
+        ];
+
+        foreach ($faqs as $i => $faq) {
+            Faq::updateOrCreate(
+                ['question' => $faq['question']],
+                [
+                    'answer' => $faq['answer'],
+                    'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]
+            );
+        }
 
         Testimonial::firstOrCreate(
             ['name' => 'Alex Chen'],
@@ -134,6 +205,41 @@ class ContentSeeder extends Seeder
             if (! SiteSetting::query()->where('key', $key)->exists()) {
                 SiteSetting::set($key, $value);
             }
+        }
+
+        $contentDefaults = SiteContent::defaults();
+        SiteSetting::set('author_name', $contentDefaults['author_name']);
+        SiteSetting::set('author_role', $contentDefaults['author_role']);
+        SiteSetting::set('author_bio', $contentDefaults['author_bio']);
+        SiteSetting::set('author_image', $contentDefaults['author_image']);
+        SiteSetting::set('contact_email', $contentDefaults['contact_email']);
+        SiteSetting::set('community_size', $contentDefaults['community_size']);
+        SiteSetting::setJson('social_stats', $contentDefaults['social_stats']);
+        SiteSetting::setJson('social_links', $contentDefaults['social_links']);
+        SiteSetting::setJson('nav_links', $contentDefaults['nav_links']);
+        SiteSetting::setJson('footer_links', $contentDefaults['footer_links']);
+        SiteSetting::setJson('subscribe_benefits', $contentDefaults['subscribe_benefits']);
+
+        $adSeeds = [
+            ['placement_key' => 'header', 'size' => 'leaderboard', 'title' => 'Ship 10x Faster with NovaCommerce', 'subtitle' => 'Multi-vendor ecommerce · React + Laravel', 'cta' => 'View Demo', 'href' => '#', 'sponsor' => 'Sponsored', 'gradient_key' => 'violetSunset', 'sort_order' => 1],
+            ['placement_key' => 'heroBelow', 'size' => 'billboard', 'title' => 'Premium Admin Dashboards for SaaS Teams', 'subtitle' => '50+ components · Dark mode · Lifetime updates', 'cta' => 'Shop Now', 'href' => '#', 'sponsor' => 'Advertisement', 'gradient_key' => 'slateHero', 'sort_order' => 2],
+            ['placement_key' => 'sidebarTop', 'size' => 'rectangle', 'title' => 'APIForge Laravel', 'subtitle' => 'Production-ready REST APIs', 'cta' => 'Learn More', 'href' => '#', 'sponsor' => 'Ad', 'gradient_key' => 'ocean', 'sort_order' => 3],
+            ['placement_key' => 'sidebarSticky', 'size' => 'skyscraper', 'title' => 'Developer Tools Week', 'subtitle' => 'Save 40% on all digital products', 'cta' => 'Get Offer', 'href' => '#', 'sponsor' => 'Sponsored', 'gradient_key' => 'brand', 'sort_order' => 4],
+            ['placement_key' => 'inlineFeed', 'size' => 'native', 'title' => 'SaaSify Starter Kit', 'subtitle' => 'Auth, billing & teams built-in', 'cta' => 'Explore', 'href' => '#', 'sponsor' => 'Promoted', 'gradient_key' => 'indigo', 'sort_order' => 5],
+            ['placement_key' => 'midPage', 'size' => 'billboard', 'title' => 'Join 12,400+ Developers', 'subtitle' => 'Weekly tips on React, Laravel & shipping products', 'cta' => 'Subscribe Free', 'href' => '/#subscribe', 'sponsor' => 'PixelNoryx', 'gradient_key' => 'editorial', 'sort_order' => 6],
+            ['placement_key' => 'footerBanner', 'size' => 'leaderboard', 'title' => 'Your Ad Could Be Here', 'subtitle' => 'Reach developers & indie hackers · Contact us', 'cta' => 'Advertise', 'href' => '/#contact', 'sponsor' => 'Advertisement', 'gradient_key' => 'zinc', 'sort_order' => 7],
+        ];
+
+        $schedule = [
+            'starts_at' => now()->toDateString(),
+            'ends_at' => now()->addYear()->toDateString(),
+        ];
+
+        foreach ($adSeeds as $ad) {
+            AdPlacement::updateOrCreate(
+                ['placement_key' => $ad['placement_key']],
+                array_merge($ad, ['is_active' => true], $schedule)
+            );
         }
     }
 }

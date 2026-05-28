@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MessageCircle, Share2 } from "lucide-react";
-import { fetchPostBySlug, fetchSeo } from "@/lib/api";
-import { newsletterIssues, getIssueBySlug } from "@/lib/data";
+import { getBootstrap, getPostBySlug, fetchSeo } from "@/lib/cms";
 import { buildPostMetadata } from "@/lib/seo";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
@@ -17,37 +16,31 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return newsletterIssues.map((issue) => ({ slug: issue.slug }));
+  const { posts } = await getBootstrap();
+  return posts.map((issue) => ({ slug: issue.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [seo, apiPost] = await Promise.all([fetchSeo(), fetchPostBySlug(slug)]);
+  const [seo, issue] = await Promise.all([fetchSeo(), getPostBySlug(slug)]);
 
-  if (apiPost?.seo) {
-    return buildPostMetadata(seo, apiPost.seo, {
-      title: apiPost.title,
-      description: apiPost.excerpt ?? "",
-      image: apiPost.image,
-    });
-  }
-
-  const issue = getIssueBySlug(slug);
   if (!issue) return { title: "Not Found" };
+
+  const siteUrl = seo?.siteUrl ?? "http://localhost:3000";
 
   return buildPostMetadata(
     seo,
     {
       title: issue.title,
       description: issue.excerpt,
-      keywords: [],
-      canonical: `${seo?.siteUrl ?? "http://localhost:3000"}/archive/${slug}`,
+      keywords: issue.tags ?? [],
+      canonical: `${siteUrl}/archive/${slug}`,
       robots: seo?.robots ?? "index, follow",
       openGraph: {
         title: issue.title,
         description: issue.excerpt,
         image: issue.image,
-        url: `${seo?.siteUrl ?? "http://localhost:3000"}/archive/${slug}`,
+        url: `${siteUrl}/archive/${slug}`,
         type: "article",
       },
     },
@@ -57,12 +50,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function IssuePage({ params }: PageProps) {
   const { slug } = await params;
-  const issue = getIssueBySlug(slug);
+  const { posts } = await getBootstrap();
+  const issue = await getPostBySlug(slug);
   if (!issue) notFound();
 
-  const related = newsletterIssues
-    .filter((i) => i.slug !== slug)
-    .slice(0, 2);
+  const related = posts.filter((i) => i.slug !== slug).slice(0, 2);
 
   return (
     <div className="py-10">
@@ -121,7 +113,7 @@ export default async function IssuePage({ params }: PageProps) {
             <div className="prose-article mt-10">
               <p className="text-xl font-medium text-foreground">{issue.preview}</p>
               <p>{issue.excerpt}</p>
-              <p>{issue.content}</p>
+              <div dangerouslySetInnerHTML={{ __html: issue.content }} />
             </div>
 
             <div className="mt-10 flex items-center gap-4 border-y border-border py-6">

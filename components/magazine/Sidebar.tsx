@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { newsletterIssues, socialStats, siteConfig, socialLinks } from "@/lib/data";
-import { adPlacements } from "@/lib/ads";
+import { useAds, usePosts, useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeWidget from "@/components/newsletter/SubscribeWidget";
 import PostCard from "./PostCard";
 import AdSlot from "@/components/ads/AdSlot";
@@ -11,15 +10,23 @@ import DynamicIcon from "@/components/ui/IconMap";
 import AnimateIn from "@/components/ui/AnimateIn";
 
 export default function Sidebar() {
-  const trending = newsletterIssues.slice(0, 5);
-  const editorsChoice = newsletterIssues.filter((i) => i.featured).slice(0, 4);
+  const posts = usePosts();
+  const adPlacements = useAds();
+  const siteConfig = useSiteConfig();
+  const { settings } = useSiteData();
+  const socialLinks = settings.socialLinks;
+  const socialStats = settings.socialStats;
+  const trending = posts.slice(0, 5);
+  const editorsChoice = posts.filter((i) => i.featured).slice(0, 4);
 
   return (
     <aside className="space-y-8 lg:w-[340px] lg:shrink-0">
-      <AnimateIn direction="left" delay={0.1}>
-        <p className="ad-slot-label">Sponsored</p>
-        <AdSlot ad={adPlacements.sidebarTop} animate={false} />
-      </AnimateIn>
+      {adPlacements.sidebarTop ? (
+        <AnimateIn direction="left" delay={0.1}>
+          <p className="ad-slot-label">Sponsored</p>
+          <AdSlot ad={adPlacements.sidebarTop} animate={false} />
+        </AnimateIn>
+      ) : null}
 
       <AnimateIn direction="left" delay={0.15}>
         <SubscribeWidget />
@@ -68,12 +75,14 @@ export default function Sidebar() {
         </div>
       </AnimateIn>
 
-      <AnimateIn direction="left" delay={0.3}>
-        <p className="ad-slot-label">Advertisement</p>
-        <div className="lg:sticky lg:top-28">
-          <AdSlot ad={adPlacements.sidebarSticky} animate={false} />
-        </div>
-      </AnimateIn>
+      {adPlacements.sidebarSticky ? (
+        <AnimateIn direction="left" delay={0.3}>
+          <p className="ad-slot-label">Advertisement</p>
+          <div className="lg:sticky lg:top-28">
+            <AdSlot ad={adPlacements.sidebarSticky} animate={false} />
+          </div>
+        </AnimateIn>
+      ) : null}
 
       <AnimateIn direction="left" delay={0.35}>
         <div className="sidebar-widget">

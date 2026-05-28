@@ -1,11 +1,11 @@
 "use client";
 
-import { newsletterIssues } from "@/lib/data";
+import { usePosts } from "@/components/providers/SiteDataProvider";
 import PostCard from "@/components/magazine/PostCard";
 import AnimateIn from "@/components/ui/AnimateIn";
 
 export default function TrendingStrip() {
-  const trending = newsletterIssues.slice(0, 6);
+  const trending = usePosts().slice(0, 6);
 
   return (
     <section className="border-y border-border/80 bg-white/60 py-10 backdrop-blur-sm">

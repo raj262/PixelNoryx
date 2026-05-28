@@ -11,6 +11,6 @@ export const topicColors: Record<NewsletterTopic, string> = {
   Frontend: "text-category-frontend",
 };
 
-export function getTopicColor(topic: NewsletterTopic): string {
-  return topicColors[topic] ?? "text-primary";
+export function getTopicColor(topic: NewsletterTopic | string): string {
+  return topicColors[topic as NewsletterTopic] ?? "text-primary";
 }

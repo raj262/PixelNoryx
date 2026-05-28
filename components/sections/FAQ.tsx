@@ -13,7 +13,7 @@ import {
   Plus,
   Shield,
 } from "lucide-react";
-import { faqs } from "@/lib/data";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { cn } from "@/lib/utils";
 import AnimateIn from "@/components/ui/AnimateIn";
 
@@ -27,6 +27,7 @@ const faqMeta = [
 ] as const;
 
 export default function FAQ() {
+  const faqs = useSiteData().faqs;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (

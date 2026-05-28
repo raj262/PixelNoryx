@@ -3,30 +3,33 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpen, Code2, Mail, PenLine, Users } from "lucide-react";
-import { siteConfig, socialStats } from "@/lib/data";
+import { useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import AnimateIn from "@/components/ui/AnimateIn";
 
-const highlights = [
-  {
-    icon: Code2,
-    label: "Stack",
-    value: "React · Laravel · SaaS",
-  },
-  {
-    icon: Users,
-    label: "Community",
-    value: "25K+ developers",
-  },
-  {
-    icon: BookOpen,
-    label: "Newsletter",
-    value: siteConfig.frequency,
-  },
-];
-
 export default function AboutSection() {
+  const siteConfig = useSiteConfig();
+  const { settings } = useSiteData();
   const { author } = siteConfig;
+  const socialStats = settings.socialStats;
+
+  const highlights = [
+    {
+      icon: Code2,
+      label: "Stack",
+      value: "React · Laravel · SaaS",
+    },
+    {
+      icon: Users,
+      label: "Community",
+      value: `${settings.communitySize} developers`,
+    },
+    {
+      icon: BookOpen,
+      label: "Newsletter",
+      value: siteConfig.frequency,
+    },
+  ];
 
   return (
     <section id="about" className="py-16 sm:py-20">

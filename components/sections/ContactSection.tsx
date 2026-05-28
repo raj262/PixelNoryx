@@ -10,32 +10,40 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
-import { siteConfig, socialStats } from "@/lib/data";
+import { sendContactMessage } from "@/lib/api-client";
+import { useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import AnimateIn from "@/components/ui/AnimateIn";
 
-const contactPoints = [
-  {
-    icon: Mail,
-    label: "Email us",
-    value: "hello@pixelnoryx.com",
-    href: "mailto:hello@pixelnoryx.com",
-  },
-  {
-    icon: Clock,
-    label: "Response time",
-    value: "Within 24 hours",
-  },
-  {
-    icon: MessageCircle,
-    label: "Newsletter",
-    value: siteConfig.frequency,
-    href: "/#subscribe",
-  },
-];
-
 export default function ContactSection() {
+  const siteConfig = useSiteConfig();
+  const { settings } = useSiteData();
+  const socialStats = settings.socialStats;
+  const contactEmail = settings.contactEmail;
+
+  const contactPoints = [
+    {
+      icon: Mail,
+      label: "Email us",
+      value: contactEmail,
+      href: `mailto:${contactEmail}`,
+    },
+    {
+      icon: Clock,
+      label: "Response time",
+      value: "Within 24 hours",
+    },
+    {
+      icon: MessageCircle,
+      label: "Newsletter",
+      value: siteConfig.frequency,
+      href: "/#subscribe",
+    },
+  ];
+
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
   return (
     <section id="contact" className="py-16 sm:py-20">
@@ -130,9 +138,24 @@ export default function ContactSection() {
 
                 <form
                   className="mt-6 grid gap-4 sm:grid-cols-2"
-                  onSubmit={(e: FormEvent) => {
+                  onSubmit={async (e: FormEvent<HTMLFormElement>) => {
                     e.preventDefault();
-                    setSent(true);
+                    setError(null);
+                    setSending(true);
+                    const form = e.currentTarget;
+                    const fd = new FormData(form);
+                    const result = await sendContactMessage({
+                      name: String(fd.get("name") ?? ""),
+                      email: String(fd.get("email") ?? ""),
+                      message: String(fd.get("message") ?? ""),
+                    });
+                    setSending(false);
+                    if (result.ok) {
+                      setSent(true);
+                      form.reset();
+                    } else {
+                      setError(result.message ?? "Could not send message.");
+                    }
                   }}
                 >
                   <div className="sm:col-span-1">
@@ -144,6 +167,7 @@ export default function ContactSection() {
                     </label>
                     <input
                       id="contact-name"
+                      name="name"
                       required
                       placeholder="Your name"
                       className="w-full rounded-xl border border-border bg-surface/80 px-4 py-3 text-sm transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/15"
@@ -158,6 +182,7 @@ export default function ContactSection() {
                     </label>
                     <input
                       id="contact-email"
+                      name="email"
                       type="email"
                       required
                       placeholder="you@company.com"
@@ -173,6 +198,7 @@ export default function ContactSection() {
                     </label>
                     <textarea
                       id="contact-message"
+                      name="message"
                       required
                       rows={5}
                       placeholder="Tell us about your project or question..."
@@ -180,12 +206,18 @@ export default function ContactSection() {
                     />
                   </div>
                   <div className="sm:col-span-2">
+                    {error && (
+                      <p className="mb-3 text-sm text-primary">{error}</p>
+                    )}
                     <button
                       type="submit"
-                      className="btn-modern inline-flex w-full items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-[0.98] sm:w-auto"
+                      disabled={sending || sent}
+                      className="btn-modern inline-flex w-full items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 sm:w-auto"
                     >
                       {sent ? (
                         "Message sent — thank you!"
+                      ) : sending ? (
+                        "Sending…"
                       ) : (
                         <>
                           Send message

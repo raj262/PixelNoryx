@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { socialStats } from "@/lib/data";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function TopBar() {
+  const { settings } = useSiteData();
+  const socialStats = settings.socialStats;
   return (
     <div className="hidden border-b border-border bg-surface md:block">
       <div className="magazine-container flex h-10 items-center justify-between text-xs">

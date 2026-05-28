@@ -5,7 +5,8 @@ import TopBar from "@/components/layout/TopBar";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ClientShell from "@/components/layout/ClientShell";
-import { fetchSeo } from "@/lib/api";
+import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
+import { getBootstrap, fetchSeo } from "@/lib/cms";
 import { buildSiteMetadata } from "@/lib/seo";
 
 const outfit = Outfit({
@@ -36,11 +37,13 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteData = await getBootstrap();
+
   return (
     <html
       lang="en"
@@ -48,11 +51,13 @@ export default function RootLayout({
       className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <TopBar />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <ClientShell />
+        <SiteDataProvider data={siteData}>
+          <TopBar />
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <ClientShell />
+        </SiteDataProvider>
       </body>
     </html>
   );

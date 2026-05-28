@@ -1,21 +1,24 @@
 "use client";
 
-import { newsletterIssues } from "@/lib/data";
-import { adPlacements } from "@/lib/ads";
+import { useAds, usePosts } from "@/components/providers/SiteDataProvider";
 import PostCard from "@/components/magazine/PostCard";
 import AdSlot from "@/components/ads/AdSlot";
 import AnimateIn from "@/components/ui/AnimateIn";
 
 export default function HeroFeatured() {
-  const [hero, ...sidePosts] = newsletterIssues.slice(0, 4);
+  const posts = usePosts();
+  const adPlacements = useAds();
+  const [hero, ...sidePosts] = posts.slice(0, 4);
 
   return (
     <section className="relative overflow-hidden pb-4 pt-6">
       <div className="magazine-container">
-        <AnimateIn>
-          <p className="ad-slot-label">Sponsored</p>
-          <AdSlot ad={adPlacements.header} animate={false} />
-        </AnimateIn>
+        {adPlacements.header ? (
+          <AnimateIn>
+            <p className="ad-slot-label">Sponsored</p>
+            <AdSlot ad={adPlacements.header} animate={false} />
+          </AnimateIn>
+        ) : null}
 
         <AnimateIn delay={0.1} className="mb-8 mt-10">
           <p className="section-subtitle">Trending Now</p>
@@ -38,10 +41,12 @@ export default function HeroFeatured() {
           </div>
         </AnimateIn>
 
-        <AnimateIn delay={0.2} className="mt-8">
-          <p className="ad-slot-label">Advertisement</p>
-          <AdSlot ad={adPlacements.heroBelow} index={1} animate={false} />
-        </AnimateIn>
+        {adPlacements.heroBelow ? (
+          <AnimateIn delay={0.2} className="mt-8">
+            <p className="ad-slot-label">Advertisement</p>
+            <AdSlot ad={adPlacements.heroBelow} index={1} animate={false} />
+          </AnimateIn>
+        ) : null}
       </div>
     </section>
   );

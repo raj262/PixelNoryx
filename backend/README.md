@@ -86,6 +86,7 @@ Run on port 8001: `php artisan serve --port=8001`
 | GET | `/api/v1/categories` | Categories |
 | GET | `/api/v1/settings` | Site settings |
 | GET | `/api/v1/seo` | Global SEO (titles, OG, robots, verification) |
+| GET | `/api/v1/bootstrap` | Full site payload (posts, settings, ads, FAQs, etc.) |
 | GET | `/api/v1/faqs` | FAQs |
 | GET | `/api/v1/testimonials` | Testimonials |
 | POST | `/api/v1/subscribe` | Newsletter subscribe |
@@ -100,6 +101,21 @@ Set in `.env`:
 ```
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
+
+## Manage frontend content (admin)
+
+| Admin section | What it controls on localhost:3000 |
+|---------------|--------------------------------------|
+| **Posts / Issues** | Home hero, trending, archive, single post pages |
+| **Categories** | Topic filters & nav dropdown |
+| **Ad placements** | All sponsored / ad blocks |
+| **Site content** (Settings) | Author, nav, footer, social stats, subscribe benefits |
+| **SEO** (Settings) | Meta tags & Open Graph |
+| **FAQs** | Common Questions section |
+| **Testimonials** | Testimonial blocks (if used) |
+| **Subscribers / Contact** | Form submissions from the site |
+
+The Next.js app calls `GET /api/v1/bootstrap` on each page load (cached 60s). If the API is down, it falls back to static `lib/data.ts`.
 
 ## SEO management (admin)
 

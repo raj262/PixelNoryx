@@ -7,6 +7,7 @@ use App\Models\Faq;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Support\SeoSettings;
+use App\Support\SiteContent;
 use Illuminate\Http\JsonResponse;
 
 class SiteController extends Controller
@@ -28,6 +29,13 @@ class SiteController extends Controller
     {
         return response()->json([
             'data' => SeoSettings::toApiPayload(),
+        ]);
+    }
+
+    public function bootstrap(): JsonResponse
+    {
+        return response()->json([
+            'data' => SiteContent::bootstrapPayload(),
         ]);
     }
 
