@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-white/[0.08] bg-card/80 backdrop-blur-xl;
+  }
+
+  .glass-hover {
+    @apply transition-all duration-300 hover:border-white/[0.14] hover:bg-card hover:shadow-glow;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+    background-size: 200% auto;
+  }
+
+  .section-padding {
+    @apply px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24;
+  }
+
+  .grid-pattern {
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .floating-orb {
+    @apply pointer-events-none absolute rounded-full blur-3xl;
+  }
+
+  .prose-blog {
+    @apply text-muted leading-relaxed;
+  }
+
+  .prose-blog h2 {
+    @apply mt-10 mb-4 font-display text-2xl font-bold text-foreground;
+  }
+
+  .prose-blog p {
+    @apply mb-4;
+  }
+
+  .newsletter-quote {
+    @apply border-primary/60;
+  }
+
+  .newsletter-body {
+    @apply font-[var(--font-poppins)] leading-relaxed;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
