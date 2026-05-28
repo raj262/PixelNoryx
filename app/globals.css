@@ -12,64 +12,52 @@
   }
 
   ::selection {
-    @apply bg-primary/30 text-foreground;
+    @apply bg-primary/20 text-foreground;
   }
 }
 
 @layer components {
-  .glass {
-    @apply border border-white/[0.08] bg-card/80 backdrop-blur-xl;
+  .magazine-container {
+    @apply mx-auto w-full max-w-magazine px-4 sm:px-6;
   }
 
-  .glass-hover {
-    @apply transition-all duration-300 hover:border-white/[0.14] hover:bg-card hover:shadow-glow;
+  .section-title {
+    @apply font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl;
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
-    background-size: 200% auto;
+  .section-subtitle {
+    @apply text-sm font-medium uppercase tracking-widest text-muted;
   }
 
-  .section-padding {
-    @apply px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24;
+  .post-card {
+    @apply overflow-hidden bg-card transition-shadow duration-300 hover:shadow-card-hover;
   }
 
-  .grid-pattern {
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0.025) 1px,
-        transparent 1px
-      ),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-    background-size: 48px 48px;
+  .category-badge {
+    @apply inline-block text-xs font-bold uppercase tracking-wide;
   }
 
-  .floating-orb {
-    @apply pointer-events-none absolute rounded-full blur-3xl;
+  .meta-line {
+    @apply text-xs text-muted;
   }
 
-  .prose-blog {
-    @apply text-muted leading-relaxed;
+  .sidebar-widget {
+    @apply border border-border bg-card p-6;
   }
 
-  .prose-blog h2 {
-    @apply mt-10 mb-4 font-display text-2xl font-bold text-foreground;
+  .nav-link {
+    @apply text-sm font-semibold uppercase tracking-wide text-foreground transition-colors hover:text-primary;
   }
 
-  .prose-blog p {
-    @apply mb-4;
+  .prose-article {
+    @apply font-serif text-lg leading-relaxed text-foreground/90;
   }
 
-  .newsletter-quote {
-    @apply border-primary/60;
+  .prose-article p {
+    @apply mb-5;
   }
 
-  .newsletter-body {
-    @apply font-[var(--font-poppins)] leading-relaxed;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .prose-article h2 {
+    @apply mb-4 mt-10 font-display text-2xl font-bold text-foreground;
   }
 }

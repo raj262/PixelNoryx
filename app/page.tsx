@@ -1,25 +1,19 @@
-import Hero from "@/components/sections/Hero";
-import LatestIssue from "@/components/sections/LatestIssue";
-import WhySubscribe from "@/components/sections/WhySubscribe";
-import NewsletterArchive from "@/components/sections/NewsletterArchive";
-import AboutAuthor from "@/components/sections/AboutAuthor";
-import NewsletterCTA from "@/components/sections/NewsletterCTA";
-import Testimonials from "@/components/sections/Testimonials";
+import HeroFeatured from "@/components/sections/HeroFeatured";
+import TrendingStrip from "@/components/sections/TrendingStrip";
+import RecentPosts from "@/components/sections/RecentPosts";
+import AboutSection from "@/components/sections/AboutSection";
 import FAQ from "@/components/sections/FAQ";
-import Contact from "@/components/sections/Contact";
+import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
   return (
     <>
-      <Hero />
-      <LatestIssue />
-      <WhySubscribe />
-      <NewsletterArchive limit={6} />
-      <AboutAuthor />
-      <Testimonials />
-      <NewsletterCTA />
+      <HeroFeatured />
+      <TrendingStrip />
+      <RecentPosts />
+      <AboutSection />
       <FAQ />
-      <Contact />
+      <ContactSection />
     </>
   );
 }

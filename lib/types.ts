@@ -25,6 +25,8 @@ export interface NewsletterIssue {
   tags: string[];
   featured?: boolean;
   free?: boolean;
+  commentCount?: number;
+  sponsored?: boolean;
 }
 
 /** @deprecated Use NewsletterIssue — kept for gradual migration */

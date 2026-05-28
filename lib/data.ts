@@ -16,11 +16,19 @@ export const siteConfig = {
   },
 };
 
+export const socialStats = [
+  { label: "Facebook", count: "3K", href: "https://facebook.com" },
+  { label: "Twitter", count: "3K", href: "https://twitter.com" },
+  { label: "YouTube", count: "740", href: "https://youtube.com" },
+  { label: "Instagram", count: "3K", href: "https://instagram.com" },
+];
+
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Archive", href: "/archive" },
+  { label: "Features", href: "/#recent" },
+  { label: "Categories", href: "/archive", hasDropdown: true },
   { label: "About", href: "/#about" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export const newsletterTopics: NewsletterTopic[] = [
@@ -33,6 +41,11 @@ export const newsletterTopics: NewsletterTopic[] = [
   "Startup",
   "Frontend",
 ];
+
+export const categoryNav = newsletterTopics.map((topic) => ({
+  label: topic,
+  href: `/archive?topic=${encodeURIComponent(topic)}`,
+}));
 
 export const subscribeBenefits = [
   {
@@ -79,6 +92,8 @@ export const newsletterIssues: NewsletterIssue[] = [
     tags: ["Ecommerce", "Laravel", "Architecture"],
     featured: true,
     free: true,
+    commentCount: 2,
+    sponsored: true,
   },
   {
     id: 2,
@@ -101,6 +116,7 @@ export const newsletterIssues: NewsletterIssue[] = [
     tags: ["React.js", "Laravel"],
     featured: true,
     free: true,
+    commentCount: 2,
   },
   {
     id: 3,
@@ -123,6 +139,7 @@ export const newsletterIssues: NewsletterIssue[] = [
     tags: ["UI/UX", "SaaS", "Design"],
     featured: true,
     free: true,
+    commentCount: 0,
   },
   {
     id: 4,

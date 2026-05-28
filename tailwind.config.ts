@@ -9,53 +9,38 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0F0F0F",
-        card: "#18181B",
-        primary: "#3B82F6",
-        accent: "#8B5CF6",
-        foreground: "#FFFFFF",
-        muted: "#A1A1AA",
-        surface: "#18181B",
-        "surface-elevated": "#27272A",
+        background: "#FFFFFF",
+        foreground: "#111111",
+        muted: "#666666",
+        border: "#E5E5E5",
+        card: "#FFFFFF",
+        surface: "#F7F7F7",
+        "surface-dark": "#1A1A1A",
+        primary: "#E63946",
+        "primary-hover": "#D62839",
+        accent: "#111111",
+        category: {
+          react: "#2563EB",
+          laravel: "#EF4444",
+          uiux: "#8B5CF6",
+          ecommerce: "#059669",
+          apis: "#D97706",
+          saas: "#0891B2",
+          startup: "#DB2777",
+          frontend: "#4F46E5",
+        },
       },
       fontFamily: {
-        sans: ["var(--font-outfit)", "var(--font-poppins)", "system-ui", "sans-serif"],
+        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
         display: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
-        poppins: ["var(--font-poppins)", "system-ui", "sans-serif"],
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "hero-glow":
-          "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.3), transparent)",
-        "accent-glow":
-          "radial-gradient(ellipse 60% 40% at 80% 0%, rgba(139, 92, 246, 0.25), transparent)",
-        "newsletter-gradient":
-          "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)",
-      },
-      animation: {
-        float: "float 6s ease-in-out infinite",
-        "float-delayed": "float 6s ease-in-out 2s infinite",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        shimmer: "shimmer 2s linear infinite",
-      },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-14px)" },
-        },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "0.8" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
+        serif: ["var(--font-source-serif)", "Georgia", "serif"],
       },
       boxShadow: {
-        glass: "0 8px 32px rgba(0, 0, 0, 0.5)",
-        glow: "0 0 48px rgba(59, 130, 246, 0.2)",
-        "glow-accent": "0 0 48px rgba(139, 92, 246, 0.2)",
+        card: "0 1px 3px rgba(0,0,0,0.08)",
+        "card-hover": "0 8px 24px rgba(0,0,0,0.1)",
+      },
+      maxWidth: {
+        magazine: "1280px",
       },
     },
   },
