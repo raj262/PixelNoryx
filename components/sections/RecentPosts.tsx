@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import Link from "next/link";
 import { newsletterIssues } from "@/lib/data";
+import { adPlacements } from "@/lib/ads";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
+import AdSlot from "@/components/ads/AdSlot";
+import AnimateIn from "@/components/ui/AnimateIn";
 
 const PAGE_SIZE = 6;
 
@@ -14,55 +17,63 @@ export default function RecentPosts() {
   const hasMore = visible < newsletterIssues.length;
 
   return (
-    <section id="recent" className="py-12">
+    <section id="recent" className="py-14">
       <div className="magazine-container">
-        <div className="mb-8">
+        <AnimateIn>
           <p className="section-subtitle">Stay up-to-date</p>
-          <h2 className="section-title">Recent Posts</h2>
-        </div>
+          <h2 className="section-title mt-2">Recent Posts</h2>
+        </AnimateIn>
 
-        <div className="flex flex-col gap-10 lg:flex-row">
+        <div className="mt-10 flex flex-col gap-10 lg:flex-row">
           <div className="min-w-0 flex-1">
             <div className="grid gap-8 sm:grid-cols-2">
-              {posts.map((post) => (
-                <PostCard key={post.slug} post={post} variant="standard" />
+              {posts.map((post, index) => (
+                <Fragment key={post.slug}>
+                  <AnimateIn delay={(index % 2) * 0.05}>
+                    <PostCard post={post} variant="standard" />
+                  </AnimateIn>
+                  {index === 1 && (
+                    <div className="sm:col-span-2">
+                      <p className="ad-slot-label">Promoted</p>
+                      <AdSlot ad={adPlacements.inlineFeed} animate={false} />
+                    </div>
+                  )}
+                </Fragment>
               ))}
             </div>
 
             {hasMore && (
-              <div className="mt-10 text-center">
+              <AnimateIn className="mt-12 text-center">
                 <button
                   type="button"
                   onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                  className="border-2 border-foreground bg-transparent px-10 py-3 text-sm font-bold uppercase tracking-wider transition-colors hover:bg-foreground hover:text-white"
+                  className="btn-outline-modern"
                 >
                   Load more
                 </button>
-              </div>
+              </AnimateIn>
             )}
 
-            <div className="mt-12 border-t border-border pt-12">
-              <p className="section-subtitle">Editor&apos;s Choice</p>
-              <h2 className="section-title mb-8">Featured Articles</h2>
-              <div className="space-y-6">
-                {newsletterIssues
-                  .filter((i) => i.featured)
-                  .slice(0, 3)
-                  .map((post) => (
-                    <PostCard
-                      key={post.slug}
-                      post={post}
-                      variant="horizontal"
-                    />
-                  ))}
+            <AnimateIn delay={0.1} className="mt-16">
+              <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-surface to-white p-8 sm:p-10">
+                <p className="section-subtitle">Editor&apos;s Choice</p>
+                <h2 className="section-title mb-8 mt-2">Featured Articles</h2>
+                <div className="space-y-6">
+                  {newsletterIssues
+                    .filter((i) => i.featured)
+                    .slice(0, 3)
+                    .map((post) => (
+                      <PostCard key={post.slug} post={post} variant="horizontal" />
+                    ))}
+                </div>
+                <Link
+                  href="/archive"
+                  className="mt-8 inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+                >
+                  View all articles →
+                </Link>
               </div>
-              <Link
-                href="/archive"
-                className="mt-6 inline-block font-semibold text-primary hover:underline"
-              >
-                More →
-              </Link>
-            </div>
+            </AnimateIn>
           </div>
 
           <Sidebar />

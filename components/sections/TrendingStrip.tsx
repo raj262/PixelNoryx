@@ -1,16 +1,29 @@
+"use client";
+
 import { newsletterIssues } from "@/lib/data";
 import PostCard from "@/components/magazine/PostCard";
+import AnimateIn from "@/components/ui/AnimateIn";
 
 export default function TrendingStrip() {
   const trending = newsletterIssues.slice(0, 6);
 
   return (
-    <section className="border-b border-border bg-surface py-8">
+    <section className="border-y border-border/80 bg-white/60 py-10 backdrop-blur-sm">
       <div className="magazine-container">
-        <h2 className="section-title mb-6 text-xl">Trending</h2>
-        <div className="flex gap-6 overflow-x-auto pb-2 scrollbar-thin">
+        <AnimateIn>
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <p className="section-subtitle">Hot Topics</p>
+              <h2 className="section-title mt-1 text-2xl sm:text-3xl">Trending</h2>
+            </div>
+          </div>
+        </AnimateIn>
+
+        <div className="flex gap-5 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:thin]">
           {trending.map((post) => (
-            <PostCard key={post.slug} post={post} variant="trending" />
+            <div key={post.slug} className="shrink-0">
+              <PostCard post={post} variant="trending" />
+            </div>
           ))}
         </div>
       </div>

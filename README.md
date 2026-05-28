@@ -1,6 +1,18 @@
-# PixelNoryx Newsletter
+# PixelNoryx
 
-A modern, Substack-style developer newsletter website built with Next.js, Tailwind CSS, and Framer Motion.
+Magazine-style developer newsletter (Next.js) + Laravel admin API.
+
+## Project structure
+
+```
+PixelNoryx/
+├── app/                 # Next.js frontend (public site)
+├── components/
+├── lib/
+└── backend/             # Laravel API + Filament admin (separate folder)
+```
+
+See **[backend/README.md](backend/README.md)** for admin setup, roles, and API docs.
 
 ## What it is
 

@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import ClientOnly from "@/components/ui/ClientOnly";
 import SubscribeForm from "./SubscribeForm";
 
-export default function NewsletterPopup() {
+function NewsletterPopupInner() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -61,5 +62,13 @@ export default function NewsletterPopup() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+export default function NewsletterPopup() {
+  return (
+    <ClientOnly>
+      <NewsletterPopupInner />
+    </ClientOnly>
   );
 }

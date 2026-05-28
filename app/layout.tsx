@@ -5,7 +5,8 @@ import TopBar from "@/components/layout/TopBar";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ClientShell from "@/components/layout/ClientShell";
-import { siteConfig } from "@/lib/data";
+import { fetchSeo } from "@/lib/api";
+import { buildSiteMetadata } from "@/lib/seo";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -25,14 +26,15 @@ const sourceSerif = Source_Serif_4({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `PixelNoryx | ${siteConfig.tagline}`,
-    template: "%s | PixelNoryx",
-  },
-  description: siteConfig.description,
-  keywords: ["tech magazine", "developer blog", "newsletter", "react", "laravel"],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await fetchSeo();
+  return buildSiteMetadata(seo, {
+    title: seo?.home.title,
+    description: seo?.home.description,
+    keywords: seo?.home.keywords,
+    path: "/",
+  });
+}
 
 export default function RootLayout({
   children,
@@ -40,10 +42,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable} font-sans antialiased`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
+    >
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <TopBar />
         <Navbar />
         <main>{children}</main>

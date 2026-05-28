@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MessageCircle, Share2 } from "lucide-react";
+import { fetchPostBySlug, fetchSeo } from "@/lib/api";
 import { newsletterIssues, getIssueBySlug } from "@/lib/data";
+import { buildPostMetadata } from "@/lib/seo";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
 import PostMeta from "@/components/magazine/PostMeta";
@@ -20,13 +22,37 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const [seo, apiPost] = await Promise.all([fetchSeo(), fetchPostBySlug(slug)]);
+
+  if (apiPost?.seo) {
+    return buildPostMetadata(seo, apiPost.seo, {
+      title: apiPost.title,
+      description: apiPost.excerpt ?? "",
+      image: apiPost.image,
+    });
+  }
+
   const issue = getIssueBySlug(slug);
   if (!issue) return { title: "Not Found" };
-  return {
-    title: issue.title,
-    description: issue.excerpt,
-    openGraph: { images: [{ url: issue.image }] },
-  };
+
+  return buildPostMetadata(
+    seo,
+    {
+      title: issue.title,
+      description: issue.excerpt,
+      keywords: [],
+      canonical: `${seo?.siteUrl ?? "http://localhost:3000"}/archive/${slug}`,
+      robots: seo?.robots ?? "index, follow",
+      openGraph: {
+        title: issue.title,
+        description: issue.excerpt,
+        image: issue.image,
+        url: `${seo?.siteUrl ?? "http://localhost:3000"}/archive/${slug}`,
+        type: "article",
+      },
+    },
+    { title: issue.title, description: issue.excerpt, image: issue.image }
+  );
 }
 
 export default async function IssuePage({ params }: PageProps) {

@@ -39,9 +39,7 @@ export default function PostCard({
                   Sponsored
                 </span>
               )}
-              <span
-                className={`category-badge mb-3 block text-white ${getTopicColor(post.topic)}`}
-              >
+              <span className="category-badge mb-3 block text-white/90">
                 {post.topic}
               </span>
               <h2 className="font-display text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">

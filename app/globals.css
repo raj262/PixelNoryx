@@ -9,6 +9,9 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(230, 57, 70, 0.06), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(99, 102, 241, 0.05), transparent);
   }
 
   ::selection {
@@ -22,15 +25,15 @@
   }
 
   .section-title {
-    @apply font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl;
+    @apply font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl;
   }
 
   .section-subtitle {
-    @apply text-sm font-medium uppercase tracking-widest text-muted;
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-primary;
   }
 
   .post-card {
-    @apply overflow-hidden bg-card transition-shadow duration-300 hover:shadow-card-hover;
+    @apply overflow-hidden rounded-2xl border border-border/80 bg-card shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-card-hover;
   }
 
   .category-badge {
@@ -42,11 +45,15 @@
   }
 
   .sidebar-widget {
-    @apply border border-border bg-card p-6;
+    @apply rounded-2xl border border-border/80 bg-card p-6 shadow-card;
   }
 
   .nav-link {
-    @apply text-sm font-semibold uppercase tracking-wide text-foreground transition-colors hover:text-primary;
+    @apply relative text-sm font-semibold uppercase tracking-wide text-muted transition-colors hover:text-foreground;
+  }
+
+  .nav-link-active {
+    @apply text-primary;
   }
 
   .prose-article {
@@ -59,5 +66,17 @@
 
   .prose-article h2 {
     @apply mb-4 mt-10 font-display text-2xl font-bold text-foreground;
+  }
+
+  .ad-slot-label {
+    @apply mb-2 text-center text-[10px] font-medium uppercase tracking-[0.25em] text-muted;
+  }
+
+  .btn-modern {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all duration-300 hover:bg-primary hover:shadow-glow;
+  }
+
+  .btn-outline-modern {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-foreground/10 bg-white px-8 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:border-primary hover:text-primary;
   }
 }
