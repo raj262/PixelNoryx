@@ -93,7 +93,7 @@ export function buildFallbackBootstrap(): SiteBootstrap {
       description: fallbackSiteConfig.description,
       subscriberCount: fallbackSiteConfig.subscriberCount,
       frequency: fallbackSiteConfig.frequency,
-      contactEmail: "hello@pixelnoryx.com",
+      contactEmail: "designer.rajesh567@gmail.com",
       communitySize: "25K+",
       author: { ...fallbackSiteConfig.author },
       socialStats: [...fallbackSocialStats],
@@ -112,6 +112,14 @@ export function buildFallbackBootstrap(): SiteBootstrap {
     faqs: [...fallbackFaqs],
     testimonials: [...fallbackTestimonials],
     ads: mapAds(undefined),
+    ai: { enabled: false, configured: false, label: "PixelNoryx AI" },
+    whatsapp: {
+      enabled: false,
+      number: "",
+      displayNumber: "",
+      message: "",
+      url: null,
+    },
   };
 }
 
@@ -123,6 +131,14 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
     ...data,
     posts: (data.posts ?? []).map(mapPost),
     ads: mapAds(data.ads),
+    ai: data.ai ?? { enabled: false, configured: false, label: "PixelNoryx AI" },
+    whatsapp: data.whatsapp ?? {
+      enabled: false,
+      number: "",
+      displayNumber: "",
+      message: "",
+      url: null,
+    },
   };
 }
 

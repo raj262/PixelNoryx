@@ -50,6 +50,22 @@ export interface TestimonialPayload {
   rating: number;
 }
 
+export interface AiStatusPayload {
+  enabled: boolean;
+  configured?: boolean;
+  model?: string;
+  provider?: string;
+  label?: string;
+}
+
+export interface WhatsAppPayload {
+  enabled: boolean;
+  number: string;
+  displayNumber: string;
+  message: string;
+  url: string | null;
+}
+
 export interface SiteBootstrap {
   settings: SiteSettingsPayload;
   categories: CategoryPayload[];
@@ -58,4 +74,6 @@ export interface SiteBootstrap {
   faqs: FaqPayload[];
   testimonials: TestimonialPayload[];
   ads: Record<string, AdPlacement>;
+  ai?: AiStatusPayload;
+  whatsapp?: WhatsAppPayload;
 }

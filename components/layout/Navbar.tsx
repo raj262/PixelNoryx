@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ClientOnly from "@/components/ui/ClientOnly";
-import { Menu, X, Search, ChevronDown } from "lucide-react";
-import { useCategoryNav, useSiteData } from "@/components/providers/SiteDataProvider";
+import { Menu, X, Search, ChevronDown, Sparkles } from "lucide-react";
+import { openAiChat } from "@/lib/ai-chat-events";
+import { useAi, useCategoryNav, useSiteData } from "@/components/providers/SiteDataProvider";
 import SearchModal from "@/components/ui/SearchModal";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ export default function Navbar() {
   const { settings } = useSiteData();
   const navLinks = settings.navLinks;
   const categoryNav = useCategoryNav();
+  const ai = useAi();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -56,6 +58,16 @@ export default function Navbar() {
             </Link>
 
             <div className="flex items-center gap-2">
+              {ai.enabled ? (
+                <button
+                  type="button"
+                  onClick={() => openAiChat()}
+                  className="hidden rounded-full border border-primary/20 bg-primary/5 p-2.5 text-primary transition-colors hover:bg-primary/10 active:scale-95 sm:inline-flex"
+                  aria-label="Open AI chat"
+                >
+                  <Sparkles className="h-5 w-5" />
+                </button>
+              ) : null}
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
@@ -128,6 +140,19 @@ export default function Navbar() {
         {isOpen && (
           <div className="overflow-hidden border-t border-border lg:hidden">
             <div className="px-4 py-4">
+              {ai.enabled ? (
+                <button
+                  type="button"
+                  className="mb-3 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-rose-500 py-3 text-sm font-bold text-white"
+                  onClick={() => {
+                    setIsOpen(false);
+                    openAiChat();
+                  }}
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {ai.label ?? "AI Chat"}
+                </button>
+              ) : null}
               {navLinks.map((link) => (
                 <Link
                   key={link.href}

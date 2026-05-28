@@ -46,6 +46,28 @@ export function useAds() {
   return useSiteData().ads;
 }
 
+export function useAi() {
+  return (
+    useSiteData().ai ?? {
+      enabled: false,
+      configured: false,
+      label: "PixelNoryx AI",
+    }
+  );
+}
+
+export function useWhatsApp() {
+  return (
+    useSiteData().whatsapp ?? {
+      enabled: false,
+      number: "",
+      displayNumber: "",
+      message: "",
+      url: null,
+    }
+  );
+}
+
 export function usePosts() {
   return useSiteData().posts;
 }

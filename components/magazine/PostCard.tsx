@@ -116,27 +116,40 @@ export default function PostCard({
 
   if (variant === "horizontal") {
     return (
-      <article className="post-card group flex gap-4 border border-border p-4">
-        <Link href={href} className="relative h-32 w-40 shrink-0 overflow-hidden sm:h-36 sm:w-48">
-          <Image src={post.image} alt="" fill className="object-cover" sizes="192px" />
-        </Link>
-        <div className="flex min-w-0 flex-1 flex-col justify-center">
+      <article className="post-card group overflow-hidden">
+        <div className="flex flex-col sm:flex-row">
           <Link
-            href={`/archive?topic=${encodeURIComponent(post.topic)}`}
-            className={`category-badge ${getTopicColor(post.topic)}`}
+            href={href}
+            className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-auto sm:h-auto sm:min-h-[140px] sm:w-36 md:w-44"
           >
-            {post.topic}
+            <Image
+              src={post.image}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, 176px"
+            />
           </Link>
-          <Link href={href}>
-            <h3 className="mt-1 font-display text-xl font-bold group-hover:text-primary">
-              {post.title}
-            </h3>
-          </Link>
-          {showExcerpt && (
-            <p className="mt-2 text-sm text-muted line-clamp-2">{post.excerpt}</p>
-          )}
-          <div className="mt-3">
-            <PostMeta post={post} showTopic={false} />
+          <div className="flex min-w-0 flex-1 flex-col justify-center p-4 sm:p-5">
+            <Link
+              href={`/archive?topic=${encodeURIComponent(post.topic)}`}
+              className={`category-badge ${getTopicColor(post.topic)}`}
+            >
+              {post.topic}
+            </Link>
+            <Link href={href}>
+              <h3 className="mt-1 font-display text-lg font-bold leading-snug group-hover:text-primary sm:text-xl">
+                {post.title}
+              </h3>
+            </Link>
+            {showExcerpt && (
+              <p className="mt-2 text-sm text-muted line-clamp-2 sm:line-clamp-3">
+                {post.excerpt}
+              </p>
+            )}
+            <div className="mt-3">
+              <PostMeta post={post} showTopic={false} />
+            </div>
           </div>
         </div>
       </article>

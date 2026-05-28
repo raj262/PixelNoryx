@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { subscribeNewsletter } from "@/lib/api-client";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { cn } from "@/lib/utils";
 
 interface SubscribeFormProps {
@@ -15,6 +16,7 @@ export default function SubscribeForm({
   className,
   id = "subscribe",
 }: SubscribeFormProps) {
+  const { settings } = useSiteData();
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -38,10 +40,17 @@ export default function SubscribeForm({
 
   const isWidget = variant === "widget" || variant === "popup";
   const isHero = variant === "hero";
+  const stacksOnNarrow =
+    isWidget || isHero || variant === "inline" || variant === "footer";
 
   return (
-    <form id={id} onSubmit={handleSubmit} className={cn("w-full", className)}>
-      <div className={cn("flex gap-0", isWidget ? "flex-col gap-2" : "flex-row")}>
+    <form id={id} onSubmit={handleSubmit} className={cn("w-full min-w-0", className)}>
+      <div
+        className={cn(
+          "flex w-full min-w-0 gap-2",
+          stacksOnNarrow ? "flex-col sm:flex-row sm:gap-0" : "flex-row"
+        )}
+      >
         <input
           type="email"
           name="email"
@@ -49,8 +58,9 @@ export default function SubscribeForm({
           placeholder="Your email address"
           disabled={submitted || loading}
           className={cn(
-            "flex-1 border border-border bg-white px-4 text-foreground placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
-            isWidget || isHero ? "py-3" : "py-2.5 text-sm"
+            "min-w-0 flex-1 border border-border bg-white px-4 text-foreground placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
+            isWidget || isHero ? "py-3" : "py-2.5 text-sm",
+            stacksOnNarrow && "w-full sm:rounded-none"
           )}
         />
         <button
@@ -58,13 +68,20 @@ export default function SubscribeForm({
           disabled={submitted || loading}
           className={cn(
             "shrink-0 bg-primary px-6 font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary-hover disabled:opacity-70",
-            isWidget || isHero ? "py-3" : "py-2.5 text-sm"
+            isWidget || isHero ? "py-3" : "py-2.5 text-sm",
+            stacksOnNarrow && "w-full sm:w-auto"
           )}
         >
           {submitted ? "Subscribed!" : loading ? "…" : "Subscribe"}
         </button>
       </div>
       {error && <p className="mt-2 text-xs text-primary">{error}</p>}
+      {submitted && (
+        <p className="mt-2 text-xs text-muted">
+          Check your inbox (and spam folder). Welcome mail comes from{" "}
+          <span className="font-medium text-foreground">{settings.contactEmail}</span>.
+        </p>
+      )}
     </form>
   );
 }

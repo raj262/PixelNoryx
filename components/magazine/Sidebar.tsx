@@ -20,7 +20,7 @@ export default function Sidebar() {
   const editorsChoice = posts.filter((i) => i.featured).slice(0, 4);
 
   return (
-    <aside className="space-y-8 lg:w-[340px] lg:shrink-0">
+    <aside className="min-w-0 space-y-8 lg:w-[340px] lg:max-w-[340px] lg:shrink-0">
       {adPlacements.sidebarTop ? (
         <AnimateIn direction="left" delay={0.1}>
           <p className="ad-slot-label">Sponsored</p>
@@ -84,8 +84,8 @@ export default function Sidebar() {
         </AnimateIn>
       ) : null}
 
-      <AnimateIn direction="left" delay={0.35}>
-        <div className="sidebar-widget">
+      <AnimateIn direction="left" delay={0.35} className="hidden lg:block">
+        <div className="sidebar-widget min-w-0">
           <p className="section-subtitle">Editor&apos;s Choice</p>
           <h3 className="font-display mt-1 text-xl font-bold">Featured</h3>
           <div className="mt-5 space-y-4">
@@ -93,16 +93,22 @@ export default function Sidebar() {
               <Link
                 key={post.slug}
                 href={`/archive/${post.slug}`}
-                className="group flex gap-3"
+                className="group flex min-w-0 gap-3"
               >
-                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg">
-                  <Image src={post.image} alt="" fill className="object-cover transition-transform group-hover:scale-105" sizes="80px" />
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg sm:h-20 sm:w-20">
+                  <Image
+                    src={post.image}
+                    alt=""
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                    sizes="80px"
+                  />
                 </div>
-                <div>
-                  <h4 className="font-display text-sm font-bold leading-snug group-hover:text-primary line-clamp-2">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-display text-sm font-bold leading-snug text-foreground group-hover:text-primary line-clamp-2">
                     {post.title}
                   </h4>
-                  <p className="meta-line mt-1">{post.date}</p>
+                  <p className="meta-line mt-1 truncate">{post.date}</p>
                 </div>
               </Link>
             ))}

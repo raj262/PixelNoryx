@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
+use App\Services\MailNotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,9 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        ContactMessage::create($validated);
+        $message = ContactMessage::create($validated);
+
+        MailNotificationService::contactSubmitted($message);
 
         return response()->json([
             'message' => 'Message sent successfully. We will reply within 24 hours.',

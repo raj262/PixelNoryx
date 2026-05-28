@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Support\MailSettings;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        MailSettings::apply();
+
+        RateLimiter::for('ai', function (Request $request) {
+            return Limit::perMinute((int) config('ai.rate_limit_per_minute', 20))
+                ->by($request->ip());
+        });
     }
 }

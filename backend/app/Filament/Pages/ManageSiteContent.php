@@ -74,6 +74,39 @@ class ManageSiteContent extends Page
                         TextInput::make('community_size')->label('Community size label'),
                     ])
                     ->columns(2),
+                Section::make('AI chatbot (frontend)')
+                    ->description('Floating AI assistant on the site. Requires OPENAI_API_KEY in backend/.env (see Admin → AI Studio).')
+                    ->schema([
+                        Toggle::make('ai_chat_enabled')
+                            ->label('Show AI chat widget on website')
+                            ->default(true),
+                        TextInput::make('ai_chat_label')
+                            ->label('Chat title')
+                            ->default('PixelNoryx AI')
+                            ->maxLength(64),
+                    ])
+                    ->columns(2),
+                Section::make('WhatsApp chat')
+                    ->description('Floating chat button on the website. Opens WhatsApp with a pre-filled message.')
+                    ->schema([
+                        Toggle::make('whatsapp_enabled')
+                            ->label('Show WhatsApp button on site')
+                            ->default(false),
+                        TextInput::make('whatsapp_number')
+                            ->label('WhatsApp number')
+                            ->tel()
+                            ->placeholder('919876543210')
+                            ->helperText('Country code + number, digits only (no + or spaces). Example India: 91XXXXXXXXXX'),
+                        TextInput::make('whatsapp_display')
+                            ->label('Display label (optional)')
+                            ->placeholder('+91 98765 43210'),
+                        Textarea::make('whatsapp_message')
+                            ->label('Default message')
+                            ->rows(2)
+                            ->default('Hi! I have a question about PixelNoryx.')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
                 Section::make('Author (About section)')
                     ->schema([
                         TextInput::make('author_name')->required(),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
+use App\Services\MailNotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,10 @@ class SubscriberController extends Controller
                 'source' => 'website',
             ]
         );
+
+        if ($subscriber->wasRecentlyCreated) {
+            MailNotificationService::subscriberCreated($subscriber);
+        }
 
         return response()->json([
             'message' => 'Successfully subscribed!',

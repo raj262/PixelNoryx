@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\PostController;
@@ -20,6 +21,12 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/subscribe', [SubscriberController::class, 'store']);
     Route::post('/contact', [ContactController::class, 'store']);
+
+    Route::get('/ai/status', [AiController::class, 'status']);
+    Route::middleware('throttle:ai')->group(function () {
+        Route::post('/ai/chat', [AiController::class, 'chat']);
+        Route::post('/ai/generate', [AiController::class, 'generate']);
+    });
 
     Route::post('/auth/login', [AuthController::class, 'login']);
 

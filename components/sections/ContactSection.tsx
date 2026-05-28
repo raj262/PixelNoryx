@@ -11,7 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { sendContactMessage } from "@/lib/api-client";
-import { useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
+import { useSiteConfig, useSiteData, useWhatsApp } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import AnimateIn from "@/components/ui/AnimateIn";
 
@@ -20,6 +20,7 @@ export default function ContactSection() {
   const { settings } = useSiteData();
   const socialStats = settings.socialStats;
   const contactEmail = settings.contactEmail;
+  const whatsapp = useWhatsApp();
 
   const contactPoints = [
     {
@@ -28,6 +29,16 @@ export default function ContactSection() {
       value: contactEmail,
       href: `mailto:${contactEmail}`,
     },
+    ...(whatsapp.enabled && whatsapp.url
+      ? [
+          {
+            icon: MessageCircle,
+            label: "WhatsApp",
+            value: whatsapp.displayNumber,
+            href: whatsapp.url,
+          },
+        ]
+      : []),
     {
       icon: Clock,
       label: "Response time",
@@ -94,12 +105,27 @@ export default function ContactSection() {
                         </>
                       );
 
+                      const isExternal = Boolean(
+                        item.href?.startsWith("http")
+                      );
+
                       return (
                         <li key={item.label}>
                           {item.href ? (
-                            <Link href={item.href} className={cardClass}>
-                              {content}
-                            </Link>
+                            isExternal ? (
+                              <a
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={cardClass}
+                              >
+                                {content}
+                              </a>
+                            ) : (
+                              <Link href={item.href} className={cardClass}>
+                                {content}
+                              </Link>
+                            )
                           ) : (
                             <div className={cardClass}>{content}</div>
                           )}

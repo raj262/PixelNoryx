@@ -25,8 +25,8 @@ export default function RecentPosts() {
           <h2 className="section-title mt-2">Recent Posts</h2>
         </AnimateIn>
 
-        <div className="mt-10 flex flex-col gap-10 lg:flex-row">
-          <div className="min-w-0 flex-1">
+        <div className="mt-10 flex flex-col gap-10 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1 overflow-hidden">
             <div className="grid gap-8 sm:grid-cols-2">
               {posts.map((post, index) => (
                 <Fragment key={post.slug}>
@@ -55,11 +55,11 @@ export default function RecentPosts() {
               </AnimateIn>
             )}
 
-            <AnimateIn delay={0.1} className="mt-16">
-              <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-surface to-white p-8 sm:p-10">
+            <AnimateIn delay={0.1} className="mt-16 min-w-0">
+              <div className="min-w-0 overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-surface to-white p-5 sm:p-8 lg:p-10">
                 <p className="section-subtitle">Editor&apos;s Choice</p>
-                <h2 className="section-title mb-8 mt-2">Featured Articles</h2>
-                <div className="space-y-6">
+                <h2 className="section-title mb-6 mt-2 sm:mb-8">Featured Articles</h2>
+                <div className="grid min-w-0 gap-5 sm:gap-6">
                   {allPosts
                     .filter((i) => i.featured)
                     .slice(0, 3)
@@ -69,7 +69,7 @@ export default function RecentPosts() {
                 </div>
                 <Link
                   href="/archive"
-                  className="mt-8 inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline sm:mt-8 sm:text-base"
                 >
                   View all articles →
                 </Link>

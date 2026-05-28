@@ -102,6 +102,57 @@ Set in `.env`:
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
+## Gmail SMTP (admin)
+
+Configure at **Admin → Settings → Email (SMTP)**:
+
+1. Enable **2-Step Verification** on your Google account.
+2. Create an **App Password**: Google Account → Security → App passwords → Mail.
+3. In admin:
+   - **SMTP host:** `smtp.gmail.com`
+   - **Port:** `587`, **Encryption:** TLS
+   - **Gmail address** + **App password**
+   - **Admin inbox** for alerts
+4. Click **Send test email**.
+
+Emails sent when enabled:
+
+| Event | Recipient |
+|-------|-----------|
+| Contact form | Admin inbox |
+| New subscriber | Welcome email to user + optional admin alert |
+
+Settings are stored in the database (password encrypted). `.env` mail vars are fallbacks only until admin SMTP is enabled.
+
+## WhatsApp chat
+
+Configure in **Admin → Settings → Site content → WhatsApp chat**:
+
+- Enable the floating green button
+- Number with country code (e.g. `919876543210`)
+- Optional display label and default pre-filled message
+
+Opens `https://wa.me/...` in WhatsApp Web or the app. Also shown on the **Contact** section.
+
+## AI features
+
+Set in `backend/.env`:
+
+```env
+OPENAI_API_KEY=sk-...
+AI_MODEL=gpt-4o-mini
+AI_ENABLED=true
+```
+
+| Location | Features |
+|----------|----------|
+| **Site (localhost:3000)** | Floating **PixelNoryx AI** chat — answers using live posts, FAQs, and site settings |
+| **Admin → AI Studio** | Test chat, generate FAQ / ad copy / SEO / full post JSON |
+| **Admin → Posts** | **AI draft** and **AI SEO** header actions on create/edit |
+| **API** | `GET /api/v1/ai/status`, `POST /api/v1/ai/chat`, `POST /api/v1/ai/generate` |
+
+Compatible with any OpenAI-style API (`AI_BASE_URL`).
+
 ## Manage frontend content (admin)
 
 | Admin section | What it controls on localhost:3000 |
