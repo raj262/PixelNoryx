@@ -107,6 +107,7 @@ function TypingIndicator() {
 function ChatHeader({
   chatLabel,
   modelLabel,
+  apiReady,
   onMinimize,
   onClose,
   onClear,
@@ -114,6 +115,7 @@ function ChatHeader({
 }: {
   chatLabel: string;
   modelLabel: string;
+  apiReady: boolean;
   onMinimize: () => void;
   onClose: () => void;
   onClear: () => void;
@@ -128,9 +130,9 @@ function ChatHeader({
         </span>
         <div className="min-w-0">
           <p className="truncate font-semibold text-sm">{chatLabel}</p>
-              <p className="text-[11px] text-white/60">
-                {apiReady ? `Virtual assistant · ${modelLabel}` : "Offline — API not configured"}
-              </p>
+          <p className="text-[11px] text-white/60">
+            {apiReady ? `Virtual assistant · ${modelLabel}` : "Offline — API not configured"}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-0.5">
@@ -365,6 +367,7 @@ export default function AiChatWidget() {
             <ChatHeader
               chatLabel={chatLabel}
               modelLabel={modelLabel}
+              apiReady={apiReady}
               compact
               onMinimize={() => setView("open")}
               onClose={() => setView("closed")}
@@ -393,6 +396,7 @@ export default function AiChatWidget() {
         <ChatHeader
           chatLabel={chatLabel}
           modelLabel={modelLabel}
+          apiReady={apiReady}
           onMinimize={() => setView("minimized")}
           onClose={() => setView("closed")}
           onClear={resetChat}
