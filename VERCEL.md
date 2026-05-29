@@ -9,7 +9,8 @@ You **do not** upload `.env` to Git or Vercel. Set variables in the Vercel dashb
 | Name | Value | Required |
 |------|--------|----------|
 | `NEXT_PUBLIC_API_URL` | `https://admin.rajeshcodes.in/api/v1` | Yes |
-| `NEXT_PUBLIC_SITE_URL` | `https://your-domain.vercel.app` or custom domain | Yes |
+| `NEXT_PUBLIC_SITE_URL` | `https://pixelnoryx.com/` or custom domain | Yes |
+| `NEXT_PUBLIC_GA_ID` | `G-15PBQ74TNC` | Optional (Google Analytics) |
 | `API_PROXY_TARGET` | `https://admin.rajeshcodes.in` | Optional (defaults to same host as API URL) |
 
 ### CORS / subscribe (why it broke)
