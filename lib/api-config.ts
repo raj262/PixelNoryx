@@ -1,8 +1,8 @@
 /**
  * Laravel API base URL (includes /api/v1).
  *
- * Browser on Vercel / local with proxy → same-origin /api-proxy/v1 (no CORS)
- * Server / SSR → always direct NEXT_PUBLIC_API_URL
+ * Browser: use /api-proxy/v1 when API is on another host (fixes Vercel CORS).
+ * Server / SSR: always calls NEXT_PUBLIC_API_URL directly.
  */
 
 const DEFAULT_API = "https://admin.rajeshcodes.in/api/v1";
@@ -12,15 +12,36 @@ export function getServerApiBaseUrl(): string {
   return raw.replace(/\/$/, "");
 }
 
-/** Use Next.js rewrite proxy in the browser (avoids CORS). Auto-on for Vercel. */
+function apiHostFromEnv(): string | null {
+  try {
+    return new URL(getServerApiBaseUrl()).host;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Use same-origin Next.js rewrite proxy (no browser CORS).
+ * VERCEL is only set on the server — also detect cross-origin API host in the browser.
+ */
 export function shouldUseApiProxy(): boolean {
   if (process.env.NEXT_PUBLIC_USE_API_PROXY === "false") {
     return false;
   }
-  if (process.env.NEXT_PUBLIC_USE_API_PROXY === "true") {
+  if (
+    process.env.NEXT_PUBLIC_USE_API_PROXY === "true" ||
+    process.env.NEXT_PUBLIC_USE_API_PROXY === "1"
+  ) {
     return true;
   }
-  // Vercel sets VERCEL=1 — enable proxy so you don't need a .env file for CORS
+
+  if (typeof window !== "undefined") {
+    const apiHost = apiHostFromEnv();
+    if (apiHost && window.location.host && apiHost !== window.location.host) {
+      return true;
+    }
+  }
+
   return process.env.VERCEL === "1";
 }
 
