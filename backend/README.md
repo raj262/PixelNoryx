@@ -91,7 +91,10 @@ Run on port 8001: `php artisan serve --port=8001`
 | GET | `/api/v1/testimonials` | Testimonials |
 | POST | `/api/v1/subscribe` | Newsletter subscribe |
 | POST | `/api/v1/contact` | Contact form |
+| POST | `/api/v1/auth/register` | Create reader account (returns token) |
 | POST | `/api/v1/auth/login` | API login (returns token) |
+| GET | `/api/v1/auth/me` | Current user (Bearer token) |
+| POST | `/api/v1/auth/logout` | Revoke token (Bearer token) |
 | GET | `/api/v1/auth/me` | Current user (Bearer token) |
 
 ## CORS
@@ -136,12 +139,13 @@ Opens `https://wa.me/...` in WhatsApp Web or the app. Also shown on the **Contac
 
 ## AI features
 
-Set in `backend/.env`:
+Set in `backend/.env` (get a key from [Google AI Studio](https://aistudio.google.com/apikey)):
 
 ```env
-OPENAI_API_KEY=sk-...
-AI_MODEL=gpt-4o-mini
 AI_ENABLED=true
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your-key-here
+AI_MODEL=gemini-2.0-flash
 ```
 
 | Location | Features |
@@ -151,7 +155,7 @@ AI_ENABLED=true
 | **Admin → Posts** | **AI draft** and **AI SEO** header actions on create/edit |
 | **API** | `GET /api/v1/ai/status`, `POST /api/v1/ai/chat`, `POST /api/v1/ai/generate` |
 
-Compatible with any OpenAI-style API (`AI_BASE_URL`).
+Optional: set `AI_PROVIDER=openai` and `OPENAI_API_KEY` for OpenAI-compatible APIs (`AI_BASE_URL`).
 
 ## Manage frontend content (admin)
 

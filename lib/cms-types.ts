@@ -51,8 +51,12 @@ export interface TestimonialPayload {
 }
 
 export interface AiStatusPayload {
+  /** Admin toggle: show chat widget on the public site */
   enabled: boolean;
+  /** GEMINI_API_KEY (or OpenAI) is set on the server */
   configured?: boolean;
+  /** enabled + configured — widget can answer messages */
+  ready?: boolean;
   model?: string;
   provider?: string;
   label?: string;

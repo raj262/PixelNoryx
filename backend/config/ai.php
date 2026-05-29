@@ -1,15 +1,26 @@
 <?php
 
+$provider = env('AI_PROVIDER', 'gemini');
+
 return [
     'enabled' => env('AI_ENABLED', true),
 
-    'provider' => env('AI_PROVIDER', 'openai'),
+    'provider' => $provider,
 
-    'api_key' => env('OPENAI_API_KEY'),
+    'api_key' => in_array($provider, ['gemini', 'google'], true)
+        ? env('GEMINI_API_KEY')
+        : env('OPENAI_API_KEY'),
 
     'base_url' => rtrim(env('AI_BASE_URL', 'https://api.openai.com/v1'), '/'),
 
-    'model' => env('AI_MODEL', 'gpt-4o-mini'),
+    'gemini_base_url' => rtrim(
+        env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
+        '/'
+    ),
+
+    'model' => env('AI_MODEL', in_array($provider, ['gemini', 'google'], true)
+        ? 'gemini-2.0-flash'
+        : 'gpt-4o-mini'),
 
     'max_tokens' => (int) env('AI_MAX_TOKENS', 2000),
 

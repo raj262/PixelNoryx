@@ -1,7 +1,7 @@
+import { getApiBaseUrl } from "@/lib/api-config";
 import type { PostSeoPayload, SeoPayload } from "@/lib/seo-types";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8001/api/v1";
+const API_BASE = getApiBaseUrl();
 
 const defaultRevalidate = 60;
 

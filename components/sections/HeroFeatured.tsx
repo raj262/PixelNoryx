@@ -2,6 +2,7 @@
 
 import { useAds, usePosts } from "@/components/providers/SiteDataProvider";
 import PostCard from "@/components/magazine/PostCard";
+import LatestHeadlines from "@/components/magazine/LatestHeadlines";
 import AdSlot from "@/components/ads/AdSlot";
 import AnimateIn from "@/components/ui/AnimateIn";
 
@@ -25,20 +26,9 @@ export default function HeroFeatured() {
           <h2 className="section-title mt-2">Top Stories</h2>
         </AnimateIn>
 
-        <AnimateIn delay={0.15} className="grid gap-6 lg:grid-cols-3">
+        <AnimateIn delay={0.15} className="grid items-stretch gap-6 lg:grid-cols-3">
           <PostCard post={hero} variant="hero" />
-          <div className="flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-card lg:col-span-1">
-            <div className="border-b border-border bg-gradient-to-r from-surface to-white px-4 py-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted">
-                Latest Headlines
-              </h3>
-            </div>
-            <div className="flex-1 px-4">
-              {sidePosts.map((post) => (
-                <PostCard key={post.slug} post={post} variant="side" />
-              ))}
-            </div>
-          </div>
+          <LatestHeadlines posts={sidePosts} />
         </AnimateIn>
 
         {adPlacements.heroBelow ? (

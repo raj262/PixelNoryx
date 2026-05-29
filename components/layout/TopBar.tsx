@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export default function TopBar() {
   const { settings } = useSiteData();
+  const { user, loading, logout } = useAuth();
   const socialStats = settings.socialStats;
+
   return (
     <div className="hidden border-b border-border bg-surface md:block">
       <div className="magazine-container flex h-10 items-center justify-between text-xs">
@@ -24,13 +27,33 @@ export default function TopBar() {
           ))}
         </div>
         <div className="flex items-center gap-4 text-muted">
-          <Link href="/#contact" className="hover:text-primary">
-            Login
-          </Link>
-          <span className="text-border">|</span>
-          <Link href="/#subscribe" className="hover:text-primary">
-            Register
-          </Link>
+          {loading ? (
+            <span className="text-border">…</span>
+          ) : user ? (
+            <>
+              <Link href="/account" className="font-semibold text-foreground hover:text-primary">
+                {user.name.split(" ")[0]}
+              </Link>
+              <span className="text-border">|</span>
+              <button
+                type="button"
+                onClick={() => logout()}
+                className="hover:text-primary"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hover:text-primary">
+                Login
+              </Link>
+              <span className="text-border">|</span>
+              <Link href="/register" className="font-semibold text-foreground hover:text-primary">
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

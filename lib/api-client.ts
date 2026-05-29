@@ -1,5 +1,6 @@
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8001/api/v1";
+import { getApiBaseUrl } from "@/lib/api-config";
+
+const API_BASE = getApiBaseUrl();
 
 export async function subscribeNewsletter(email: string, name?: string) {
   try {

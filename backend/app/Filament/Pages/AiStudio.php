@@ -2,7 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\SiteSetting;
 use App\Services\Ai\AiService;
+use App\Support\SiteContent;
+use Filament\Forms\Components\Toggle;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -51,6 +54,7 @@ class AiStudio extends Page
     public function mount(): void
     {
         $this->form->fill([
+            'ai_chat_enabled' => SiteSetting::get('ai_chat_enabled', '1') === '1',
             'chat_message' => '',
             'chat_reply' => '',
             'generate_type' => 'faq',
@@ -68,12 +72,30 @@ class AiStudio extends Page
     {
         $aiConfigured = app(AiService::class)->isConfigured();
 
+        $chatOnSite = SiteSetting::get('ai_chat_enabled', '1') === '1';
+
         return $schema
             ->components([
+                Section::make('Frontend chatbot')
+                    ->description('Show or hide the Amazon-style chat widget on the public website.')
+                    ->schema([
+                        Toggle::make('ai_chat_enabled')
+                            ->label('Enable chatbot on frontend')
+                            ->live()
+                            ->afterStateUpdated(function (?bool $state): void {
+                                SiteContent::saveChatbotSettings([
+                                    'ai_chat_enabled' => (bool) $state,
+                                ]);
+                                Notification::make()
+                                    ->success()
+                                    ->title($state ? 'Chatbot enabled on site' : 'Chatbot hidden on site')
+                                    ->send();
+                            }),
+                    ]),
                 Section::make('AI status')
                     ->description($aiConfigured
-                        ? 'Connected to '.config('ai.model').'. The public site shows an AI chat widget when enabled.'
-                        : 'Set OPENAI_API_KEY in backend/.env, then restart php artisan serve.'),
+                        ? 'Connected to '.config('ai.model').'. Frontend widget: '.($chatOnSite ? 'ON' : 'OFF').'.'
+                        : 'Set GEMINI_API_KEY from Google AI Studio in backend/.env, then restart php artisan serve.'),
                 Section::make('Site assistant (test)')
                     ->schema([
                         Textarea::make('chat_message')

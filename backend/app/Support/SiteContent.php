@@ -82,8 +82,9 @@ class SiteContent
         $chatEnabled = SiteSetting::get('ai_chat_enabled', '1') === '1';
 
         return [
-            'enabled' => $configured && $chatEnabled,
+            'enabled' => $chatEnabled,
             'configured' => $configured,
+            'ready' => $configured && $chatEnabled,
             'model' => config('ai.model'),
             'provider' => config('ai.provider'),
             'label' => SiteSetting::get('ai_chat_label', 'PixelNoryx AI'),
@@ -228,13 +229,31 @@ class SiteContent
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public static function saveChatbotSettings(array $data): void
+    {
+        if (array_key_exists('ai_chat_enabled', $data)) {
+            SiteSetting::set(
+                'ai_chat_enabled',
+                filter_var($data['ai_chat_enabled'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0'
+            );
+        }
+
+        if (array_key_exists('ai_chat_label', $data)) {
+            SiteSetting::set('ai_chat_label', (string) ($data['ai_chat_label'] ?? 'PixelNoryx AI'));
+        }
+    }
+
     public static function saveFromAdminForm(array $data): void
     {
+        self::saveChatbotSettings($data);
+
         $keys = [
             'site_name', 'tagline', 'description', 'subscriber_count', 'frequency',
             'contact_email', 'community_size', 'author_name', 'author_role', 'author_bio', 'author_image',
             'whatsapp_enabled', 'whatsapp_number', 'whatsapp_display', 'whatsapp_message',
-            'ai_chat_enabled', 'ai_chat_label',
         ];
 
         foreach ($keys as $key) {
@@ -244,7 +263,7 @@ class SiteContent
 
             $value = $data[$key] ?? '';
 
-            if ($key === 'whatsapp_enabled' || $key === 'ai_chat_enabled') {
+            if ($key === 'whatsapp_enabled') {
                 SiteSetting::set($key, filter_var($value, FILTER_VALIDATE_BOOLEAN) ? '1' : '0');
 
                 continue;

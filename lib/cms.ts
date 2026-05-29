@@ -17,8 +17,9 @@ import {
 } from "@/lib/data";
 import type { NewsletterIssue } from "@/lib/types";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8001/api/v1";
+import { getApiBaseUrl } from "@/lib/api-config";
+
+const API_BASE = getApiBaseUrl();
 
 const REVALIDATE = 60;
 const TIMEOUT_MS = 8000;
@@ -112,7 +113,7 @@ export function buildFallbackBootstrap(): SiteBootstrap {
     faqs: [...fallbackFaqs],
     testimonials: [...fallbackTestimonials],
     ads: mapAds(undefined),
-    ai: { enabled: false, configured: false, label: "PixelNoryx AI" },
+    ai: { enabled: false, configured: false, ready: false, label: "PixelNoryx AI" },
     whatsapp: {
       enabled: false,
       number: "",
@@ -131,7 +132,7 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
     ...data,
     posts: (data.posts ?? []).map(mapPost),
     ads: mapAds(data.ads),
-    ai: data.ai ?? { enabled: false, configured: false, label: "PixelNoryx AI" },
+    ai: data.ai ?? { enabled: false, configured: false, ready: false, label: "PixelNoryx AI" },
     whatsapp: data.whatsapp ?? {
       enabled: false,
       number: "",

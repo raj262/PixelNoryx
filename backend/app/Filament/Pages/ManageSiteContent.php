@@ -75,10 +75,11 @@ class ManageSiteContent extends Page
                     ])
                     ->columns(2),
                 Section::make('AI chatbot (frontend)')
-                    ->description('Floating AI assistant on the site. Requires OPENAI_API_KEY in backend/.env (see Admin → AI Studio).')
+                    ->description('Same settings as Settings → AI Chatbot. Requires GEMINI_API_KEY in backend/.env.')
                     ->schema([
                         Toggle::make('ai_chat_enabled')
-                            ->label('Show AI chat widget on website')
+                            ->label('Enable chatbot on frontend')
+                            ->helperText('Off = hide chat pill, teaser, and navbar AI button for visitors.')
                             ->default(true),
                         TextInput::make('ai_chat_label')
                             ->label('Chat title')

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SiteController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::get('/posts', [PostController::class, 'index']);
     Route::get('/posts/{slug}', [PostController::class, 'show']);
+    Route::get('/posts/{slug}/comments', [CommentController::class, 'index']);
     Route::get('/categories', [PostController::class, 'categories']);
 
     Route::get('/settings', [SiteController::class, 'settings']);
@@ -28,10 +30,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/ai/generate', [AiController::class, 'generate']);
     });
 
-    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/auth/register', [AuthController::class, 'register']);
+        Route::post('/auth/login', [AuthController::class, 'login']);
+    });
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [AuthController::class, 'me']);
+        Route::post('/posts/{slug}/comments', [CommentController::class, 'store']);
+        Route::delete('/posts/{slug}/comments/{comment}', [CommentController::class, 'destroy']);
     });
 });

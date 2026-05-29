@@ -90,6 +90,17 @@ export default function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/50 sm:flex-row">
           <p>© {year} {siteConfig.name}. All Rights Reserved.</p>
+          <p>
+            Developed by{" "}
+            <a
+              href="https://rajeshcodes.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-white/80 transition-colors hover:text-primary"
+            >
+              Rajesh
+            </a>
+          </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((l) => (
               <Link key={l.label} href={l.href} className="hover:text-primary">

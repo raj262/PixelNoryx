@@ -5,6 +5,7 @@ import TopBar from "@/components/layout/TopBar";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ClientShell from "@/components/layout/ClientShell";
+import AppProviders from "@/components/providers/AppProviders";
 import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
 import { getBootstrap, fetchSeo } from "@/lib/cms";
 import { buildSiteMetadata } from "@/lib/seo";
@@ -52,11 +53,13 @@ export default async function RootLayout({
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
         <SiteDataProvider data={siteData}>
-          <TopBar />
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <ClientShell />
+          <AppProviders>
+            <TopBar />
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <ClientShell />
+          </AppProviders>
         </SiteDataProvider>
       </body>
     </html>

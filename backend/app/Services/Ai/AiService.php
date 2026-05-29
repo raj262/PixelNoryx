@@ -4,13 +4,18 @@ namespace App\Services\Ai;
 
 use App\Models\Faq;
 use App\Models\Post;
+use App\Services\Ai\Providers\GeminiProvider;
+use App\Services\Ai\Providers\OpenAiProvider;
 use App\Support\SiteContent;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class AiService
 {
+    public function __construct(
+        protected GeminiProvider $gemini,
+        protected OpenAiProvider $openAi,
+    ) {}
     public function isConfigured(): bool
     {
         if (! config('ai.enabled')) {
@@ -63,7 +68,7 @@ class AiService
         $raw = $this->completion([
             ['role' => 'system', 'content' => $system],
             ['role' => 'user', 'content' => $userContent],
-        ]);
+        ], json: $this->usesGemini());
 
         return $this->parseJsonResponse($raw);
     }
@@ -110,37 +115,29 @@ class AiService
         return implode("\n", $lines);
     }
 
+    protected function usesGemini(): bool
+    {
+        return in_array(config('ai.provider'), ['gemini', 'google'], true);
+    }
+
     /**
      * @param  array<int, array{role: string, content: string}>  $messages
      */
-    protected function completion(array $messages): string
+    protected function completion(array $messages, bool $json = false): string
     {
         if (! $this->isConfigured()) {
-            throw new RuntimeException('AI is not configured. Add OPENAI_API_KEY to backend/.env');
+            throw new RuntimeException(
+                $this->usesGemini()
+                    ? 'AI is not configured. Add GEMINI_API_KEY from Google AI Studio to backend/.env'
+                    : 'AI is not configured. Add OPENAI_API_KEY to backend/.env'
+            );
         }
 
-        $response = Http::timeout(90)
-            ->withToken(config('ai.api_key'))
-            ->acceptJson()
-            ->post(config('ai.base_url').'/chat/completions', [
-                'model' => config('ai.model'),
-                'messages' => $messages,
-                'max_tokens' => config('ai.max_tokens'),
-                'temperature' => config('ai.temperature'),
-            ]);
-
-        if (! $response->successful()) {
-            $message = $response->json('error.message') ?? $response->body();
-            throw new RuntimeException('AI request failed: '.$message);
+        if ($this->usesGemini()) {
+            return $this->gemini->complete($messages, $json);
         }
 
-        $content = $response->json('choices.0.message.content');
-
-        if (! is_string($content) || trim($content) === '') {
-            throw new RuntimeException('AI returned an empty response.');
-        }
-
-        return trim($content);
+        return $this->openAi->complete($messages);
     }
 
     /**

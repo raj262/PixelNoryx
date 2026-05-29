@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MessageCircle, Share2 } from "lucide-react";
 import { getBootstrap, getPostBySlug, fetchSeo } from "@/lib/cms";
+import SharePostButton from "@/components/magazine/SharePostButton";
 import { buildPostMetadata } from "@/lib/seo";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
 import PostMeta from "@/components/magazine/PostMeta";
 import { getTopicColor } from "@/lib/topic-colors";
+import PostComments from "@/components/comments/PostComments";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 
 interface PageProps {
@@ -55,6 +56,9 @@ export default async function IssuePage({ params }: PageProps) {
   if (!issue) notFound();
 
   const related = posts.filter((i) => i.slug !== slug).slice(0, 2);
+  const seo = await fetchSeo();
+  const siteUrl = seo?.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const postUrl = `${siteUrl.replace(/\/$/, "")}/archive/${slug}`;
 
   return (
     <div className="py-10">
@@ -89,14 +93,12 @@ export default async function IssuePage({ params }: PageProps) {
               <PostMeta post={issue} showTopic={false} />
             </div>
 
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                className="flex items-center gap-2 border border-border px-4 py-2 text-sm hover:border-primary"
-              >
-                <Share2 className="h-4 w-4" />
-                Share
-              </button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <SharePostButton
+                title={issue.title}
+                url={postUrl}
+                text={issue.excerpt}
+              />
             </div>
 
             <div className="relative mt-8 aspect-[21/9] overflow-hidden">
@@ -116,12 +118,7 @@ export default async function IssuePage({ params }: PageProps) {
               <div dangerouslySetInnerHTML={{ __html: issue.content }} />
             </div>
 
-            <div className="mt-10 flex items-center gap-4 border-y border-border py-6">
-              <MessageCircle className="h-5 w-5 text-muted" />
-              <span className="text-sm text-muted">
-                {issue.commentCount ?? 0} comments · Join the discussion
-              </span>
-            </div>
+            <PostComments slug={slug} initialCount={issue.commentCount ?? 0} />
 
             <div className="mt-10 border border-border bg-surface p-8">
               <h2 className="font-display text-xl font-bold">Enjoyed this post?</h2>
