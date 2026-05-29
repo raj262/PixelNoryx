@@ -7,42 +7,48 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Fallback CORS headers when upstream (nginx) strips Laravel's HandleCors output.
+ * Ensures CORS headers on all API responses (including OPTIONS preflight).
  */
 class EnsureCorsHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        if (! $this->isApiRequest($request)) {
+            return $next($request);
+        }
+
         if ($request->isMethod('OPTIONS')) {
-            $response = response('', 204);
-        } else {
-            $response = $next($request);
+            return $this->applyCorsHeaders($request, response('', 204));
         }
 
-        if (! $request->is('api/*') && ! $request->is('sanctum/csrf-cookie')) {
-            return $response;
-        }
+        return $this->applyCorsHeaders($request, $next($request));
+    }
 
+    protected function isApiRequest(Request $request): bool
+    {
+        return $request->is('api/*')
+            || str_starts_with($request->path(), 'api/');
+    }
+
+    protected function applyCorsHeaders(Request $request, Response $response): Response
+    {
         $origin = $request->headers->get('Origin');
-        if (! is_string($origin) || $origin === '') {
+
+        if (! is_string($origin) || $origin === '' || ! $this->originAllowed($origin)) {
             return $response;
         }
 
-        if (! $this->originAllowed($origin)) {
-            return $response;
-        }
+        $response->headers->set('Access-Control-Allow-Origin', $origin);
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        $response->headers->set(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization, Accept, X-Requested-With, X-XSRF-TOKEN'
+        );
+        $response->headers->set('Access-Control-Max-Age', (string) config('cors.max_age', 3600));
+        $response->headers->set('Vary', 'Origin', false);
 
-        if (! $response->headers->has('Access-Control-Allow-Origin')) {
-            $response->headers->set('Access-Control-Allow-Origin', $origin);
-            $response->headers->set('Vary', 'Origin', false);
-        }
-
-        if (! $response->headers->has('Access-Control-Allow-Methods')) {
-            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        }
-
-        if (! $response->headers->has('Access-Control-Allow-Headers')) {
-            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
+        if (config('cors.supports_credentials')) {
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
         }
 
         return $response;
@@ -58,7 +64,7 @@ class EnsureCorsHeaders
         }
 
         foreach (config('cors.allowed_origins_patterns', []) as $pattern) {
-            if (@preg_match($pattern, $origin) === 1) {
+            if (is_string($pattern) && @preg_match($pattern, $origin) === 1) {
                 return true;
             }
         }

@@ -1,15 +1,9 @@
-import { getApiBaseUrl } from "@/lib/api-config";
-
-const API_BASE = getApiBaseUrl();
+import { clientApiFetch } from "@/lib/api-fetch";
 
 export async function subscribeNewsletter(email: string, name?: string) {
   try {
-    const res = await fetch(`${API_BASE}/subscribe`, {
+    const res = await clientApiFetch("/subscribe", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
       body: JSON.stringify({ email, ...(name ? { name } : {}) }),
     });
     const json = (await res.json().catch(() => ({}))) as { message?: string };
@@ -25,12 +19,8 @@ export async function sendContactMessage(data: {
   message: string;
 }) {
   try {
-    const res = await fetch(`${API_BASE}/contact`, {
+    const res = await clientApiFetch("/contact", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
       body: JSON.stringify(data),
     });
     const json = (await res.json().catch(() => ({}))) as { message?: string };

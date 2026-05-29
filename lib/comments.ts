@@ -1,8 +1,5 @@
 import { getStoredToken } from "@/lib/auth";
-
-import { getApiBaseUrl } from "@/lib/api-config";
-
-const API_BASE = getApiBaseUrl();
+import { clientApiFetch } from "@/lib/api-fetch";
 
 export type CommentAuthor = {
   id: number;
@@ -21,11 +18,7 @@ export type PostComment = {
 
 function authHeaders(): HeadersInit {
   const token = getStoredToken();
-  return {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 function parseError(json: { message?: string; errors?: Record<string, string[]> }, fallback: string) {
@@ -42,8 +35,7 @@ export async function fetchPostComments(slug: string): Promise<{
   count: number;
 } | { ok: false; message: string }> {
   try {
-    const res = await fetch(`${API_BASE}/posts/${encodeURIComponent(slug)}/comments`, {
-      headers: { Accept: "application/json" },
+    const res = await clientApiFetch(`/posts/${encodeURIComponent(slug)}/comments`, {
       cache: "no-store",
     });
     const json = (await res.json().catch(() => ({}))) as {
@@ -75,7 +67,7 @@ export async function createPostComment(
   | { ok: false; message: string }
 > {
   try {
-    const res = await fetch(`${API_BASE}/posts/${encodeURIComponent(slug)}/comments`, {
+    const res = await clientApiFetch(`/posts/${encodeURIComponent(slug)}/comments`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({
@@ -117,8 +109,8 @@ export async function deletePostComment(
   commentId: number
 ): Promise<{ ok: true; count: number } | { ok: false; message: string }> {
   try {
-    const res = await fetch(
-      `${API_BASE}/posts/${encodeURIComponent(slug)}/comments/${commentId}`,
+    const res = await clientApiFetch(
+      `/posts/${encodeURIComponent(slug)}/comments/${commentId}`,
       {
         method: "DELETE",
         headers: authHeaders(),

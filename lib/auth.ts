@@ -1,6 +1,4 @@
-import { getApiBaseUrl } from "@/lib/api-config";
-
-const API_BASE = getApiBaseUrl();
+import { clientApiFetch } from "@/lib/api-fetch";
 
 export const AUTH_TOKEN_KEY = "pixelnoryx_auth_token";
 
@@ -60,9 +58,8 @@ export async function loginUser(
   password: string
 ): Promise<AuthSuccess | AuthFailure> {
   try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await clientApiFetch("/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ email, password }),
     });
     const json = (await res.json().catch(() => ({}))) as {
@@ -82,7 +79,7 @@ export async function loginUser(
 
     return { ok: true, token: json.token, user: json.user };
   } catch {
-    return { ok: false, message: "Network error. Is the API running on port 8001?" };
+    return { ok: false, message: "Network error. Please try again." };
   }
 }
 
@@ -93,9 +90,8 @@ export async function registerUser(data: {
   password_confirmation: string;
 }): Promise<AuthSuccess | AuthFailure> {
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await clientApiFetch("/auth/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(data),
     });
     const json = (await res.json().catch(() => ({}))) as {
@@ -115,7 +111,7 @@ export async function registerUser(data: {
 
     return { ok: true, token: json.token, user: json.user };
   } catch {
-    return { ok: false, message: "Network error. Is the API running on port 8001?" };
+    return { ok: false, message: "Network error. Please try again." };
   }
 }
 
@@ -123,11 +119,8 @@ export async function fetchCurrentUser(
   token: string
 ): Promise<{ ok: true; user: AuthUser } | { ok: false }> {
   try {
-    const res = await fetch(`${API_BASE}/auth/me`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    const res = await clientApiFetch("/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!res.ok) {
@@ -147,12 +140,9 @@ export async function fetchCurrentUser(
 
 export async function logoutUser(token: string): Promise<void> {
   try {
-    await fetch(`${API_BASE}/auth/logout`, {
+    await clientApiFetch("/auth/logout", {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
   } catch {
     /* ignore */
