@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { subscribeNewsletter } from "@/lib/api-client";
+import { trackNewsletterSubscribe } from "@/lib/analytics";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,7 @@ export default function SubscribeForm({
 
     if (result.ok) {
       setSubmitted(true);
+      trackNewsletterSubscribe(email);
     } else {
       setError(result.message ?? "Subscription failed.");
     }
