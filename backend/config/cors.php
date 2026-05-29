@@ -28,6 +28,8 @@ foreach ($defaults as $origin) {
 $patterns = array_values(array_filter([
     '#^https?://localhost(:\d+)?$#',
     '#^https?://127\.0\.0\.1(:\d+)?$#',
+    // Vercel production & preview deployments
+    '#^https://[a-z0-9-]+(-[a-z0-9-]+)*\.vercel\.app$#i',
     env('CORS_ORIGIN_PATTERN_RAJESHCODES') !== '0'
         ? '#^https?://([a-z0-9-]+\.)?rajeshcodes\.in$#i'
         : null,

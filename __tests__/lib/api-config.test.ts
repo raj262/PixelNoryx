@@ -43,10 +43,29 @@ describe("shouldUseApiProxy", () => {
     }
   });
 
-  it("is true on Vercel when env not set", () => {
+  it("is true on Vercel build (server env)", () => {
     delete process.env.NEXT_PUBLIC_USE_API_PROXY;
     process.env.VERCEL = "1";
     expect(shouldUseApiProxy()).toBe(true);
+  });
+
+  it("is true in browser when API host differs from page host", () => {
+    delete process.env.NEXT_PUBLIC_USE_API_PROXY;
+    delete process.env.VERCEL;
+    process.env.NEXT_PUBLIC_API_URL = "https://admin.rajeshcodes.in/api/v1";
+
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      value: { ...originalLocation, host: "pixelnoryx.vercel.app" },
+      writable: true,
+    });
+
+    expect(shouldUseApiProxy()).toBe(true);
+
+    Object.defineProperty(window, "location", {
+      value: originalLocation,
+      writable: true,
+    });
   });
 
   it("is false when explicitly disabled", () => {
@@ -73,10 +92,18 @@ describe("getApiBaseUrl", () => {
     }
   });
 
-  it("uses server URL when proxy is off", () => {
-    delete process.env.NEXT_PUBLIC_USE_API_PROXY;
-    delete process.env.VERCEL;
+  it("uses direct API URL when proxy disabled and same host", () => {
+    process.env.NEXT_PUBLIC_USE_API_PROXY = "false";
     process.env.NEXT_PUBLIC_API_URL = "https://admin.rajeshcodes.in/api/v1";
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      value: { ...originalLocation, host: "admin.rajeshcodes.in" },
+      writable: true,
+    });
     expect(getApiBaseUrl()).toBe("https://admin.rajeshcodes.in/api/v1");
+    Object.defineProperty(window, "location", {
+      value: originalLocation,
+      writable: true,
+    });
   });
 });

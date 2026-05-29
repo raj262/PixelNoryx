@@ -9,6 +9,12 @@ function apiProxyTarget(): string {
 }
 
 const nextConfig: NextConfig = {
+  // Inlined at build time on Vercel so the client bundle enables /api-proxy (no CORS)
+  env: {
+    NEXT_PUBLIC_USE_API_PROXY:
+      process.env.NEXT_PUBLIC_USE_API_PROXY ??
+      (process.env.VERCEL ? "true" : ""),
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },

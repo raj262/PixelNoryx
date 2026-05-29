@@ -12,15 +12,19 @@ You **do not** upload `.env` to Git or Vercel. Set variables in the Vercel dashb
 | `NEXT_PUBLIC_SITE_URL` | `https://your-domain.vercel.app` or custom domain | Yes |
 | `API_PROXY_TARGET` | `https://admin.rajeshcodes.in` | Optional (defaults to same host as API URL) |
 
-### CORS / subscribe
+### CORS / subscribe (why it broke)
 
-On Vercel, **`VERCEL=1` is set automatically**. The app enables the **API proxy** so the browser calls:
+The browser cannot read server-only `VERCEL=1`. Without env vars, the app called `admin.rajeshcodes.in` directly, and the **live Laravel server did not allow `*.vercel.app` origins** → CORS error.
+
+**Fixed in code:** the browser auto-uses `/api-proxy/v1` when the API host ≠ your site host (e.g. Vercel → rajeshcodes.in).
+
+After redeploy, Network tab should show:
 
 `https://your-app.vercel.app/api-proxy/v1/subscribe`
 
-→ Vercel forwards to Laravel. **No CORS errors**, no extra env for proxy.
+not `admin.rajeshcodes.in`.
 
-You do **not** need `NEXT_PUBLIC_USE_API_PROXY` on Vercel unless you want to turn the proxy off.
+**Also deploy** updated `backend/config/cors.php` to Hostinger (adds `*.vercel.app` pattern) and run `php artisan config:clear`.
 
 ## 2. Redeploy after adding variables
 
