@@ -1,7 +1,5 @@
-import { getApiBaseUrl } from "@/lib/api-config";
+import { apiUrl } from "@/lib/api-config";
 import type { PostSeoPayload, SeoPayload } from "@/lib/seo-types";
-
-const API_BASE = getApiBaseUrl();
 
 const defaultRevalidate = 60;
 
@@ -12,7 +10,7 @@ async function apiGet<T>(path: string): Promise<T | null> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(apiUrl(path, { server: true }), {
       next: { revalidate: defaultRevalidate },
       signal: controller.signal,
     });

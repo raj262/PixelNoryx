@@ -1,8 +1,5 @@
 import type { AiStatusPayload } from "@/lib/cms-types";
-
-import { getApiBaseUrl } from "@/lib/api-config";
-
-const API_BASE = getApiBaseUrl();
+import { clientApiFetch, serverApiFetch } from "@/lib/api-fetch";
 
 export type ChatMessage = {
   role: "user" | "assistant";
@@ -11,7 +8,7 @@ export type ChatMessage = {
 
 export async function fetchAiStatus(): Promise<AiStatusPayload> {
   try {
-    const res = await fetch(`${API_BASE}/ai/status`, {
+    const res = await serverApiFetch("/ai/status", {
       next: { revalidate: 60 },
     });
     if (!res.ok) return { enabled: false };
@@ -27,9 +24,8 @@ export async function sendAiChat(
   history: ChatMessage[] = []
 ): Promise<{ ok: true; reply: string } | { ok: false; message: string }> {
   try {
-    const res = await fetch(`${API_BASE}/ai/chat`, {
+    const res = await clientApiFetch("/ai/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ message, history }),
     });
     const json = (await res.json().catch(() => ({}))) as {

@@ -17,9 +17,7 @@ import {
 } from "@/lib/data";
 import type { NewsletterIssue } from "@/lib/types";
 
-import { getApiBaseUrl } from "@/lib/api-config";
-
-const API_BASE = getApiBaseUrl();
+import { apiUrl } from "@/lib/api-config";
 
 const REVALIDATE = 60;
 const TIMEOUT_MS = 8000;
@@ -28,7 +26,7 @@ async function apiGet<T>(path: string): Promise<T | null> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(apiUrl(path, { server: true }), {
       next: { revalidate: REVALIDATE },
       signal: controller.signal,
     });

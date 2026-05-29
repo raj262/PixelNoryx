@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+    Route::options('/{any}', fn () => response('', 204))->where('any', '.*');
     Route::get('/posts', [PostController::class, 'index']);
     Route::get('/posts/{slug}', [PostController::class, 'show']);
     Route::get('/posts/{slug}/comments', [CommentController::class, 'index']);
