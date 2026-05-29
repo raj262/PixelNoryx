@@ -9,6 +9,7 @@ import AppProviders from "@/components/providers/AppProviders";
 import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
 import { getBootstrap, fetchSeo } from "@/lib/cms";
 import { buildSiteMetadata } from "@/lib/seo";
+import { ThirdPartyFoot, ThirdPartyHead } from "@/components/analytics/ThirdPartyScripts";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
     >
+      <ThirdPartyHead />
       <body className="font-sans antialiased" suppressHydrationWarning>
         <SiteDataProvider data={siteData}>
           <AppProviders>
@@ -62,6 +64,7 @@ export default async function RootLayout({
           </AppProviders>
         </SiteDataProvider>
       </body>
+      <ThirdPartyFoot />
     </html>
   );
 }
