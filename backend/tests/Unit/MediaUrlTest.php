@@ -44,4 +44,27 @@ class MediaUrlTest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists('posts/legacy.png'));
         $this->assertStringContainsString('/storage/posts/legacy.png', $url);
     }
+
+    public function test_normalizes_localhost_full_url_in_database(): void
+    {
+        Config::set('app.url', 'https://admin.rajeshcodes.in');
+
+        Storage::fake('local');
+        Storage::fake('public');
+
+        Storage::disk('local')->put('posts/from-db.png', 'img');
+
+        $url = MediaUrl::public('http://127.0.0.1:8001/storage/posts/from-db.png');
+
+        $this->assertStringContainsString('/storage/posts/from-db.png', $url);
+        $this->assertTrue(Storage::disk('public')->exists('posts/from-db.png'));
+    }
+
+    public function test_normalize_stored_path_strips_localhost_url(): void
+    {
+        $this->assertSame(
+            'posts/test.png',
+            MediaUrl::normalizeStoredPath('http://127.0.0.1:8001/storage/posts/test.png')
+        );
+    }
 }
