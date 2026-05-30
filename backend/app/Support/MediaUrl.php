@@ -19,7 +19,25 @@ class MediaUrl
             return self::rewriteLocalHost($path);
         }
 
-        return Storage::disk('public')->url($path);
+        self::ensurePublicCopy($path);
+
+        return self::rewriteLocalHost(Storage::disk('public')->url($path));
+    }
+
+    /**
+     * Filament used the default (private) disk before ->disk('public') was set.
+     */
+    public static function ensurePublicCopy(string $path): void
+    {
+        if ($path === '' || Storage::disk('public')->exists($path)) {
+            return;
+        }
+
+        if (! Storage::disk('local')->exists($path)) {
+            return;
+        }
+
+        Storage::disk('public')->put($path, Storage::disk('local')->get($path));
     }
 
     public static function rewriteLocalHost(string $url): string

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Support\MediaUrl;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MediaUrlTest extends TestCase
@@ -27,5 +28,20 @@ class MediaUrlTest extends TestCase
         $url = 'https://images.unsplash.com/photo-123?w=800';
 
         $this->assertSame($url, MediaUrl::rewriteLocalHost($url));
+    }
+
+    public function test_copies_legacy_private_upload_to_public_disk(): void
+    {
+        Config::set('app.url', 'http://127.0.0.1:8001');
+
+        Storage::fake('local');
+        Storage::fake('public');
+
+        Storage::disk('local')->put('posts/legacy.png', 'fake-image');
+
+        $url = MediaUrl::public('posts/legacy.png');
+
+        $this->assertTrue(Storage::disk('public')->exists('posts/legacy.png'));
+        $this->assertStringContainsString('/storage/posts/legacy.png', $url);
     }
 }

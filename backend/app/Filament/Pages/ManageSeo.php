@@ -115,6 +115,7 @@ class ManageSeo extends Page
                 Section::make('Social & verification')
                     ->schema([
                         FileUpload::make('seo_og_image')
+                            ->disk('public')
                             ->label('Default share image (OG)')
                             ->image()
                             ->directory('seo')

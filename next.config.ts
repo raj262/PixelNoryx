@@ -19,12 +19,18 @@ function apiProxyTarget(): string {
   return raw.replace(/\/$/, "");
 }
 
+function apiImageOrigin(): string {
+  return apiProxyTarget();
+}
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: apiImageHost() },
+      { protocol: "http", hostname: "127.0.0.1" },
+      { protocol: "http", hostname: "localhost" },
     ],
   },
   async redirects() {
@@ -34,11 +40,15 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    const target = apiProxyTarget();
+    const target = apiImageOrigin();
     return [
       {
         source: "/api-proxy/:path*",
         destination: `${target}/api/:path*`,
+      },
+      {
+        source: "/storage/:path*",
+        destination: `${target}/storage/:path*`,
       },
     ];
   },
