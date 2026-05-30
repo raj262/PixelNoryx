@@ -15,13 +15,39 @@ class MediaUrl
             return null;
         }
 
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        $relative = self::normalizeStoredPath($path);
+
+        if ($relative === null || $relative === '') {
             return self::rewriteLocalHost($path);
         }
 
-        self::ensurePublicCopy($path);
+        self::ensurePublicCopy($relative);
 
-        return self::rewriteLocalHost(Storage::disk('public')->url($path));
+        return self::rewriteLocalHost(Storage::disk('public')->url($relative));
+    }
+
+    /**
+     * Convert DB value to a storage-relative path (e.g. posts/file.png).
+     */
+    public static function normalizeStoredPath(?string $path): ?string
+    {
+        if ($path === null || $path === '') {
+            return null;
+        }
+
+        $path = trim($path);
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            $storagePath = parse_url($path, PHP_URL_PATH) ?? '';
+
+            if (preg_match('#^/storage/(.+)$#', $storagePath, $matches)) {
+                return $matches[1];
+            }
+
+            return $path;
+        }
+
+        return ltrim($path, '/');
     }
 
     /**
@@ -50,6 +76,13 @@ class MediaUrl
 
         $path = parse_url($url, PHP_URL_PATH) ?? '';
         $appUrl = rtrim((string) config('app.url'), '/');
+
+        if (in_array(parse_url($appUrl, PHP_URL_HOST), ['127.0.0.1', 'localhost'], true)) {
+            $fallback = env('MEDIA_PUBLIC_URL');
+            if (is_string($fallback) && $fallback !== '') {
+                $appUrl = rtrim($fallback, '/');
+            }
+        }
 
         return $appUrl.$path;
     }
