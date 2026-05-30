@@ -10,12 +10,37 @@ export function getServerApiBaseUrl(): string {
   return raw.replace(/\/$/, "");
 }
 
-/** Same-origin Next.js rewrite proxy — opt-in only via NEXT_PUBLIC_USE_API_PROXY=true */
+function isApiProxyForcedOff(): boolean {
+  const flag = process.env.NEXT_PUBLIC_USE_API_PROXY;
+  return flag === "false" || flag === "0";
+}
+
+function isApiProxyForcedOn(): boolean {
+  const flag = process.env.NEXT_PUBLIC_USE_API_PROXY;
+  return flag === "true" || flag === "1";
+}
+
+/** True when the browser should call same-origin /api-proxy (avoids CORS). */
 export function shouldUseApiProxy(): boolean {
-  return (
-    process.env.NEXT_PUBLIC_USE_API_PROXY === "true" ||
-    process.env.NEXT_PUBLIC_USE_API_PROXY === "1"
-  );
+  if (isApiProxyForcedOff()) {
+    return false;
+  }
+
+  if (isApiProxyForcedOn()) {
+    return true;
+  }
+
+  // Default in the browser: proxy when API host differs from the page (e.g. pixelnoryx.com → admin.rajeshcodes.in)
+  if (typeof window !== "undefined") {
+    try {
+      const apiHost = new URL(getServerApiBaseUrl()).host;
+      return apiHost !== window.location.host;
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
 }
 
 export function getApiBaseUrl(): string {
