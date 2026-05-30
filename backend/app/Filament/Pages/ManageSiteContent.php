@@ -114,6 +114,7 @@ class ManageSiteContent extends Page
                         TextInput::make('author_role')->required(),
                         Textarea::make('author_bio')->rows(4)->columnSpanFull(),
                         FileUpload::make('author_image')
+                            ->disk('public')
                             ->image()
                             ->directory('author')
                             ->visibility('public'),

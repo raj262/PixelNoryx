@@ -56,6 +56,7 @@ class PostForm
                 Section::make('Media & Meta')
                     ->schema([
                         FileUpload::make('image')
+                            ->disk('public')
                             ->image()
                             ->directory('posts')
                             ->visibility('public'),
@@ -95,6 +96,7 @@ class PostForm
                             ->label('Keywords')
                             ->placeholder('react, saas, laravel'),
                         FileUpload::make('og_image')
+                            ->disk('public')
                             ->label('Open Graph image')
                             ->image()
                             ->directory('posts/og')

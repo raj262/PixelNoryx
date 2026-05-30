@@ -130,6 +130,17 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
   return {
     ...data,
     posts: (data.posts ?? []).map(mapPost),
+    settings: {
+      ...data.settings,
+      author: {
+        ...data.settings.author,
+        image: normalizeMediaUrl(data.settings.author?.image ?? ""),
+      },
+    },
+    testimonials: (data.testimonials ?? []).map((t) => ({
+      ...t,
+      image: t.image ? normalizeMediaUrl(t.image) : t.image,
+    })),
     ads: mapAds(data.ads),
     ai: data.ai ?? { enabled: false, configured: false, ready: false, label: "PixelNoryx AI" },
     whatsapp: data.whatsapp ?? {
