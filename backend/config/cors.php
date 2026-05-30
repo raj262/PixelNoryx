@@ -33,6 +33,9 @@ $patterns = array_values(array_filter([
     env('CORS_ORIGIN_PATTERN_RAJESHCODES') !== '0'
         ? '#^https?://([a-z0-9-]+\.)?rajeshcodes\.in$#i'
         : null,
+    env('CORS_ORIGIN_PATTERN_PIXELNORYX') !== '0'
+        ? '#^https?://(www\.)?pixelnoryx\.com$#i'
+        : null,
 ]));
 
 return [

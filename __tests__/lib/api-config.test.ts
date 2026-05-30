@@ -33,6 +33,8 @@ describe("getServerApiBaseUrl", () => {
 
 describe("shouldUseApiProxy", () => {
   const originalProxy = process.env.NEXT_PUBLIC_USE_API_PROXY;
+  const originalApi = process.env.NEXT_PUBLIC_API_URL;
+  const originalWindow = global.window;
 
   afterEach(() => {
     if (originalProxy === undefined) {
@@ -40,10 +42,20 @@ describe("shouldUseApiProxy", () => {
     } else {
       process.env.NEXT_PUBLIC_USE_API_PROXY = originalProxy;
     }
+    if (originalApi === undefined) {
+      delete process.env.NEXT_PUBLIC_API_URL;
+    } else {
+      process.env.NEXT_PUBLIC_API_URL = originalApi;
+    }
+    Object.defineProperty(global, "window", {
+      value: originalWindow,
+      configurable: true,
+    });
   });
 
-  it("is false by default", () => {
+  it("is false on the server by default", () => {
     delete process.env.NEXT_PUBLIC_USE_API_PROXY;
+    Object.defineProperty(global, "window", { value: undefined, configurable: true });
     expect(shouldUseApiProxy()).toBe(false);
   });
 
@@ -56,10 +68,29 @@ describe("shouldUseApiProxy", () => {
     process.env.NEXT_PUBLIC_USE_API_PROXY = "false";
     expect(shouldUseApiProxy()).toBe(false);
   });
+
+  it("auto-enables in the browser when API host differs from page", () => {
+    delete process.env.NEXT_PUBLIC_USE_API_PROXY;
+    process.env.NEXT_PUBLIC_API_URL = "https://admin.rajeshcodes.in/api/v1";
+
+    const originalWindow = global.window;
+    Object.defineProperty(global, "window", {
+      value: { location: { host: "www.pixelnoryx.com" } },
+      configurable: true,
+    });
+
+    expect(shouldUseApiProxy()).toBe(true);
+
+    Object.defineProperty(global, "window", {
+      value: originalWindow,
+      configurable: true,
+    });
+  });
 });
 
 describe("getApiBaseUrl", () => {
   const originalProxy = process.env.NEXT_PUBLIC_USE_API_PROXY;
+  const originalWindow = global.window;
 
   afterEach(() => {
     if (originalProxy === undefined) {
@@ -67,11 +98,16 @@ describe("getApiBaseUrl", () => {
     } else {
       process.env.NEXT_PUBLIC_USE_API_PROXY = originalProxy;
     }
+    Object.defineProperty(global, "window", {
+      value: originalWindow,
+      configurable: true,
+    });
   });
 
-  it("uses direct API URL by default", () => {
+  it("uses direct API URL on the server by default", () => {
     delete process.env.NEXT_PUBLIC_USE_API_PROXY;
     process.env.NEXT_PUBLIC_API_URL = "https://admin.rajeshcodes.in/api/v1";
+    Object.defineProperty(global, "window", { value: undefined, configurable: true });
     expect(getApiBaseUrl()).toBe("https://admin.rajeshcodes.in/api/v1");
   });
 

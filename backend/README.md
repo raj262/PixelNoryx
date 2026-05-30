@@ -103,13 +103,15 @@ Run on port 8001: `php artisan serve --port=8001`
 
 - Origins from `CORS_ALLOWED_ORIGINS` and `FRONTEND_URL`
 - Pattern: `http://localhost:*`, `http://127.0.0.1:*`
+- Pattern: `*.vercel.app`
 - Pattern: `*.rajeshcodes.in` (disable with `CORS_ORIGIN_PATTERN_RAJESHCODES=0`)
+- Pattern: `*.pixelnoryx.com` (disable with `CORS_ORIGIN_PATTERN_PIXELNORYX=0`)
 
 **Production server** (`admin.rajeshcodes.in`) — add to `.env` and run `php artisan config:clear`:
 
 ```env
-FRONTEND_URL=https://rajeshcodes.in
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://rajeshcodes.in,https://www.rajeshcodes.in
+FRONTEND_URL=https://www.pixelnoryx.com
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://www.pixelnoryx.com,https://pixelnoryx.com
 ```
 
 **Frontend dev without CORS** — in the Next.js root `.env.local`:

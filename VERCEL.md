@@ -15,19 +15,24 @@ You **do not** upload `.env` to Git or Vercel. Set variables in the Vercel dashb
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | *(from `php artisan push:vapid-keys`)* | Optional (web push) |
 | `API_PROXY_TARGET` | `https://admin.rajeshcodes.in` | Optional (defaults to same host as API URL) |
 
-### CORS / subscribe (why it broke)
+Do **not** set `NEXT_PUBLIC_USE_API_PROXY=false` on Vercel unless Laravel CORS allows `https://www.pixelnoryx.com`. When unset, the browser automatically calls `/api-proxy/v1/...` (same origin, no CORS).
 
-The browser cannot read server-only `VERCEL=1`. Without env vars, the app called `admin.rajeshcodes.in` directly, and the **live Laravel server did not allow `*.vercel.app` origins** → CORS error.
+### CORS / register / subscribe
 
-**Fixed in code:** the browser auto-uses `/api-proxy/v1` when the API host ≠ your site host (e.g. Vercel → rajeshcodes.in).
+If the browser calls `admin.rajeshcodes.in` directly from `www.pixelnoryx.com`, Laravel must allow that origin. Deploy updated `backend/config/cors.php` (includes `*.pixelnoryx.com`) and set on Hostinger:
 
-After redeploy, Network tab should show:
+```env
+FRONTEND_URL=https://www.pixelnoryx.com
+CORS_ALLOWED_ORIGINS=https://www.pixelnoryx.com,https://pixelnoryx.com
+```
 
-`https://your-app.vercel.app/api-proxy/v1/subscribe`
+Then run `php artisan config:clear`.
+
+**Recommended:** leave `NEXT_PUBLIC_USE_API_PROXY` unset on Vercel. After redeploy, Network tab should show:
+
+`https://www.pixelnoryx.com/api-proxy/v1/auth/register`
 
 not `admin.rajeshcodes.in`.
-
-**Also deploy** updated `backend/config/cors.php` to Hostinger (adds `*.vercel.app` pattern) and run `php artisan config:clear`.
 
 ## 2. Redeploy after adding variables
 
