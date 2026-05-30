@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { siteConfig } from "@/lib/data";
+import { normalizeAuthorImage } from "@/lib/media";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 
 export default function AboutAuthor() {
   const { author } = siteConfig;
+  const authorImage = normalizeAuthorImage(author.image);
 
   return (
     <section id="about" className="section-padding">
@@ -19,7 +21,7 @@ export default function AboutAuthor() {
             className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-2xl ring-2 ring-primary/30"
           >
             <Image
-              src={author.image}
+              src={authorImage}
               alt={author.name}
               fill
               className="object-cover"

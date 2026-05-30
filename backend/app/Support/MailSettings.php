@@ -114,7 +114,11 @@ class MailSettings
 
     public static function apply(): void
     {
-        if (! self::isConfigured()) {
+        try {
+            if (! self::isConfigured()) {
+                return;
+            }
+        } catch (\Throwable) {
             return;
         }
 

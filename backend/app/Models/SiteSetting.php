@@ -11,11 +11,15 @@ class SiteSetting extends Model
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        $settings = Cache::remember('site_settings', 3600, function () {
-            return static::query()->pluck('value', 'key')->toArray();
-        });
+        try {
+            $settings = Cache::remember('site_settings', 3600, function () {
+                return static::query()->pluck('value', 'key')->toArray();
+            });
 
-        return $settings[$key] ?? $default;
+            return $settings[$key] ?? $default;
+        } catch (\Throwable) {
+            return $default;
+        }
     }
 
     public static function set(string $key, mixed $value, string $type = 'string'): void

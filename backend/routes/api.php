@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\PushController;
 use App\Http\Controllers\Api\SiteController;
 use App\Http\Controllers\Api\SubscriberController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,10 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/subscribe', [SubscriberController::class, 'store']);
     Route::post('/contact', [ContactController::class, 'store']);
+
+    Route::get('/push/config', [PushController::class, 'config']);
+    Route::post('/push/subscribe', [PushController::class, 'subscribe']);
+    Route::post('/push/unsubscribe', [PushController::class, 'unsubscribe']);
 
     Route::get('/ai/status', [AiController::class, 'status']);
     Route::middleware('throttle:ai')->group(function () {

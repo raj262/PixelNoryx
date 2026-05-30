@@ -12,6 +12,7 @@ You **do not** upload `.env` to Git or Vercel. Set variables in the Vercel dashb
 | `NEXT_PUBLIC_SITE_URL` | `https://pixelnoryx.com/` or custom domain | Yes |
 | `NEXT_PUBLIC_GA_ID` | `G-15PBQ74TNC` | Optional (Google Analytics) |
 | `NEXT_PUBLIC_CLARITY_ID` | `wyzy74qijw` | Optional (Microsoft Clarity) |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | *(from `php artisan push:vapid-keys`)* | Optional (web push) |
 | `API_PROXY_TARGET` | `https://admin.rajeshcodes.in` | Optional (defaults to same host as API URL) |
 
 ### CORS / subscribe (why it broke)
