@@ -56,6 +56,14 @@ function ArchiveGrid() {
           <PostCard key={post.slug} post={post} variant="standard" />
         ))}
       </div>
+
+      {filtered.length === 0 && (
+        <p className="rounded-lg border border-dashed border-border bg-surface/50 px-6 py-10 text-center text-sm text-muted">
+          {topicParam
+            ? `No published posts in “${topicParam}” yet. In admin, set Status to Published and assign this category.`
+            : "No published posts yet."}
+        </p>
+      )}
     </>
   );
 }

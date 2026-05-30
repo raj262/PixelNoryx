@@ -69,8 +69,10 @@ class PostForm
                                 'archived' => 'Archived',
                             ])
                             ->default('draft')
-                            ->required(),
-                        DateTimePicker::make('published_at'),
+                            ->required()
+                            ->helperText('Only Published posts appear on the site archive.'),
+                        DateTimePicker::make('published_at')
+                            ->helperText('Required for Published posts. Leave empty to use the save time.'),
                         Select::make('tags')
                             ->relationship('tags', 'name')
                             ->multiple()
