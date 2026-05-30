@@ -2,19 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Support\MediaUrl;
 use App\Support\SeoSettings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class PostResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $image = $this->image;
-        if ($image && ! str_starts_with($image, 'http')) {
-            $image = Storage::disk('public')->url($image);
-        }
+        $image = MediaUrl::public($this->image);
 
         return [
             'id' => $this->id,
