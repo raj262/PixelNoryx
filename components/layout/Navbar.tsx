@@ -125,7 +125,9 @@ export default function Navbar() {
                       href={link.href}
                       className={cn(
                         "nav-link rounded-lg px-4 py-2",
-                        pathname === link.href && "nav-link-active bg-primary/5"
+                        (pathname === link.href ||
+                          (link.href === "/features" && pathname.startsWith("/features"))) &&
+                          "nav-link-active bg-primary/5"
                       )}
                     >
                       {link.label}

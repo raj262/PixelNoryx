@@ -15,6 +15,12 @@ import {
   Code,
   TrendingUp,
   Gift,
+  BookOpen,
+  Sparkles,
+  Search,
+  MessageSquare,
+  Share2,
+  Mail,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +41,12 @@ const iconMap: Record<string, LucideIcon> = {
   Code,
   TrendingUp,
   Gift,
+  BookOpen,
+  Sparkles,
+  Search,
+  MessageSquare,
+  Share2,
+  Mail,
 };
 
 interface DynamicIconProps {

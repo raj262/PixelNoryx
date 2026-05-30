@@ -25,7 +25,7 @@ export const socialStats = [
 
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Features", href: "/#recent" },
+  { label: "Features", href: "/features" },
   { label: "Categories", href: "/archive", hasDropdown: true },
   { label: "About", href: "/#about" },
   { label: "Contact", href: "/#contact" },

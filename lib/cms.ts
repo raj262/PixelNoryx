@@ -18,6 +18,7 @@ import {
 import type { NewsletterIssue } from "@/lib/types";
 
 import { apiUrl } from "@/lib/api-config";
+import { normalizeMediaUrl } from "@/lib/media";
 
 const REVALIDATE = 60;
 const TIMEOUT_MS = 8000;
@@ -49,7 +50,7 @@ function mapPost(raw: any): NewsletterIssue {
     excerpt: raw.excerpt ?? "",
     preview: raw.preview ?? "",
     content: raw.content ?? "",
-    image: raw.image ?? "",
+    image: normalizeMediaUrl(raw.image ?? ""),
     topic: raw.topic ?? raw.category ?? "Frontend",
     author: raw.author ?? "PixelNoryx",
     authorRole: raw.authorRole ?? raw.author_role ?? "Editor",

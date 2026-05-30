@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Post;
 use App\Models\SiteSetting;
+use App\Support\MediaUrl;
 use App\Models\Testimonial;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Storage;
@@ -43,7 +44,7 @@ class SiteContent
             ],
             'nav_links' => [
                 ['label' => 'Home', 'href' => '/', 'hasDropdown' => false],
-                ['label' => 'Features', 'href' => '/#recent', 'hasDropdown' => false],
+                ['label' => 'Features', 'href' => '/features', 'hasDropdown' => false],
                 ['label' => 'Categories', 'href' => '/archive', 'hasDropdown' => true],
                 ['label' => 'About', 'href' => '/#about', 'hasDropdown' => false],
                 ['label' => 'Contact', 'href' => '/#contact', 'hasDropdown' => false],
@@ -120,9 +121,7 @@ class SiteContent
     {
         $d = self::defaults();
         $image = SiteSetting::get('author_image', $d['author_image']);
-        if ($image && ! str_starts_with($image, 'http')) {
-            $image = Storage::disk('public')->url($image);
-        }
+        $image = MediaUrl::public($image);
 
         return [
             'name' => SiteSetting::get('site_name', 'PixelNoryx'),
@@ -217,9 +216,7 @@ class SiteContent
                 'name' => $t->name,
                 'role' => $t->role,
                 'content' => $t->content,
-                'image' => $t->image && ! str_starts_with($t->image, 'http')
-                    ? Storage::disk('public')->url($t->image)
-                    : $t->image,
+                'image' => MediaUrl::public($t->image),
                 'avatar' => strtoupper(substr($t->name, 0, 1).substr(strstr($t->name, ' ') ?: '', 1, 1)),
                 'rating' => $t->rating,
             ])->values()->all(),

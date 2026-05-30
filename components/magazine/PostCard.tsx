@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { NewsletterIssue } from "@/lib/types";
+import { normalizeMediaUrl } from "@/lib/media";
 import PostMeta from "./PostMeta";
 import { getTopicColor } from "@/lib/topic-colors";
 
@@ -18,6 +19,7 @@ export default function PostCard({
   showExcerpt = true,
 }: PostCardProps) {
   const href = `/archive/${post.slug}`;
+  const imageSrc = normalizeMediaUrl(post.image);
 
   if (variant === "hero") {
     return (
@@ -25,7 +27,7 @@ export default function PostCard({
         <Link href={href} className="block">
           <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[480px]">
             <Image
-              src={post.image}
+              src={imageSrc}
               alt={post.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -65,7 +67,7 @@ export default function PostCard({
       <article className="post-card group flex gap-4 border-b border-border py-4 last:border-0">
         <Link href={href} className="relative h-24 w-28 shrink-0 overflow-hidden sm:h-28 sm:w-36">
           <Image
-            src={post.image}
+            src={imageSrc}
             alt=""
             fill
             className="object-cover transition-transform group-hover:scale-105"
@@ -98,7 +100,7 @@ export default function PostCard({
         <Link href={href} className="block w-48 sm:w-56">
           <div className="relative aspect-[4/3] overflow-hidden">
             <Image
-              src={post.image}
+              src={imageSrc}
               alt=""
               fill
               className="object-cover transition-transform group-hover:scale-105"
@@ -123,7 +125,7 @@ export default function PostCard({
             className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-auto sm:h-auto sm:min-h-[140px] sm:w-36 md:w-44"
           >
             <Image
-              src={post.image}
+              src={imageSrc}
               alt=""
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -161,7 +163,7 @@ export default function PostCard({
       <article className="group border-b border-border py-3 last:border-0">
         <Link href={href} className="flex gap-3">
           <div className="relative h-16 w-16 shrink-0 overflow-hidden">
-            <Image src={post.image} alt="" fill className="object-cover" sizes="64px" />
+            <Image src={imageSrc} alt="" fill className="object-cover" sizes="64px" />
           </div>
           <div className="min-w-0">
             <h4 className="font-display text-sm font-bold leading-snug group-hover:text-primary line-clamp-2">
@@ -180,7 +182,7 @@ export default function PostCard({
       <Link href={href}>
         <div className="relative aspect-[16/10] overflow-hidden">
           <Image
-            src={post.image}
+            src={imageSrc}
             alt=""
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

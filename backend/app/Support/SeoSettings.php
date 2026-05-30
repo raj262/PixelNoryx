@@ -3,7 +3,7 @@
 namespace App\Support;
 
 use App\Models\SiteSetting;
-use Illuminate\Support\Facades\Storage;
+use App\Support\MediaUrl;
 
 class SeoSettings
 {
@@ -135,11 +135,7 @@ class SeoSettings
             return null;
         }
 
-        if (str_starts_with($path, 'http')) {
-            return $path;
-        }
-
-        return Storage::disk('public')->url($path);
+        return MediaUrl::public($path);
     }
 
     /**

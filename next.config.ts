@@ -1,5 +1,16 @@
 import type { NextConfig } from "next";
 
+function apiImageHost(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ??
+    "https://admin.rajeshcodes.in";
+  try {
+    return new URL(raw).hostname;
+  } catch {
+    return "admin.rajeshcodes.in";
+  }
+}
+
 function apiProxyTarget(): string {
   const raw =
     process.env.API_PROXY_TARGET ??
@@ -9,16 +20,11 @@ function apiProxyTarget(): string {
 }
 
 const nextConfig: NextConfig = {
-  // Inlined at build time on Vercel so the client bundle enables /api-proxy (no CORS)
-  env: {
-    NEXT_PUBLIC_USE_API_PROXY:
-      process.env.NEXT_PUBLIC_USE_API_PROXY ??
-      (process.env.VERCEL ? "true" : ""),
-  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "img.youtube.com" },
+      { protocol: "https", hostname: apiImageHost() },
     ],
   },
   async redirects() {
