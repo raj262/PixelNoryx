@@ -52,6 +52,10 @@ class Post extends Model
             if (empty($post->slug)) {
                 $post->slug = Str::slug($post->title);
             }
+
+            if ($post->status === 'published' && $post->published_at === null) {
+                $post->published_at = now();
+            }
         });
     }
 
