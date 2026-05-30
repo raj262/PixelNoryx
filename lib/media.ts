@@ -3,6 +3,17 @@ const DEFAULT_API_ORIGIN = "https://admin.rajeshcodes.in";
 const FALLBACK_POST_IMAGE =
   "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80";
 
+const FALLBACK_AUTHOR_IMAGE =
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80";
+
+/** Author portrait when admin image is empty. */
+export function normalizeAuthorImage(url?: string | null): string {
+  if (!url?.trim()) {
+    return FALLBACK_AUTHOR_IMAGE;
+  }
+  return normalizeMediaUrl(url);
+}
+
 /** Rewrite localhost storage URLs to the live admin origin. */
 export function normalizeMediaUrl(url?: string | null): string {
   if (!url?.trim()) {
@@ -33,4 +44,4 @@ export function normalizeMediaUrl(url?: string | null): string {
   return trimmed;
 }
 
-export { FALLBACK_POST_IMAGE };
+export { FALLBACK_AUTHOR_IMAGE, FALLBACK_POST_IMAGE };

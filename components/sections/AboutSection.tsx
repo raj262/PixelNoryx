@@ -6,6 +6,7 @@ import { BookOpen, Code2, Mail, PenLine, Users } from "lucide-react";
 import { useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import AnimateIn from "@/components/ui/AnimateIn";
+import { normalizeAuthorImage } from "@/lib/media";
 
 export default function AboutSection() {
   const siteConfig = useSiteConfig();
@@ -13,6 +14,7 @@ export default function AboutSection() {
   const { author } = siteConfig;
   const socialStats = settings.socialStats;
   const firstName = author.name.split(" ")[0] ?? author.name;
+  const authorImage = normalizeAuthorImage(author.image);
 
   const highlights = [
     {
@@ -41,7 +43,7 @@ export default function AboutSection() {
               {/* Portrait panel */}
               <div className="relative min-h-[min(72vw,360px)] w-full bg-foreground sm:min-h-[400px] lg:col-span-5 lg:min-h-[560px]">
                 <Image
-                  src={author.image}
+                  src={authorImage}
                   alt={author.name}
                   fill
                   className="object-cover object-center opacity-90"
