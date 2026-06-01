@@ -66,6 +66,70 @@ GOOGLE_APPLICATION_CREDENTIALS=/full/path/to/storage/app/analytics/service-accou
             @endforeach
         </div>
 
+        @php
+            $totalSessions = max(1, (int) ($overview['sessions'] ?? 0));
+        @endphp
+
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+            <x-filament::section>
+                <x-slot name="heading">How users find you</x-slot>
+                <p class="mb-3 text-xs text-gray-500">Traffic channels (last {{ $days }} days)</p>
+                @if (count($trafficChannels) === 0)
+                    <p class="text-sm text-gray-500">No channel data yet.</p>
+                @else
+                    <div class="space-y-3">
+                        @foreach ($trafficChannels as $row)
+                            @php
+                                $pct = round(($row['sessions'] / $totalSessions) * 100, 1);
+                                $barWidth = max(4, (int) round(($row['sessions'] / max(1, $trafficChannels[0]['sessions'])) * 100));
+                            @endphp
+                            <div>
+                                <div class="mb-1 flex items-center justify-between gap-2 text-sm">
+                                    <span class="font-medium text-gray-900 dark:text-white">{{ $row['channel'] }}</span>
+                                    <span class="shrink-0 text-gray-600 dark:text-gray-400">
+                                        {{ number_format($row['sessions']) }}
+                                        <span class="text-xs text-gray-400">({{ $pct }}%)</span>
+                                    </span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                                    <div class="h-full rounded-full bg-primary-500/80" style="width: {{ $barWidth }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </x-filament::section>
+
+            <x-filament::section>
+                <x-slot name="heading">Top sources</x-slot>
+                <p class="mb-3 text-xs text-gray-500">Where sessions started (source / medium)</p>
+                @if (count($topSources) === 0)
+                    <p class="text-sm text-gray-500">No source data yet.</p>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-xs uppercase text-gray-500">
+                                    <th class="pb-2 pr-4">Source</th>
+                                    <th class="pb-2 pr-4">Medium</th>
+                                    <th class="pb-2 text-right">Sessions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($topSources as $row)
+                                    <tr class="border-b border-gray-100 dark:border-gray-800">
+                                        <td class="max-w-[10rem] truncate py-2 pr-4">{{ $row['source'] }}</td>
+                                        <td class="py-2 pr-4 text-gray-600 dark:text-gray-400">{{ $row['medium'] }}</td>
+                                        <td class="py-2 text-right font-semibold">{{ number_format($row['sessions']) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </x-filament::section>
+        </div>
+
         <div class="mt-6 grid gap-6 lg:grid-cols-2">
             <x-filament::section>
                 <x-slot name="heading">Sessions over time</x-slot>

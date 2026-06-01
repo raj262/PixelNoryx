@@ -50,6 +50,10 @@ const nextConfig: NextConfig = {
         source: "/storage/:path*",
         destination: `${target}/storage/:path*`,
       },
+      {
+        source: "/media/:path*",
+        destination: `${target}/media/:path*`,
+      },
     ];
   },
 };

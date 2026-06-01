@@ -21,6 +21,16 @@ class MediaUrl
             return self::rewriteLocalHost($path);
         }
 
+        if (str_starts_with($relative, 'http://') || str_starts_with($relative, 'https://')) {
+            return self::rewriteLocalHost($relative);
+        }
+
+        if (self::useMediaRoute()) {
+            self::ensurePublicCopy($relative);
+
+            return self::mediaRouteUrl($relative);
+        }
+
         self::ensurePublicCopy($relative);
 
         return self::rewriteLocalHost(Storage::disk('public')->url($relative));
@@ -42,6 +52,10 @@ class MediaUrl
 
             if (preg_match('#^/storage/(.+)$#', $storagePath, $matches)) {
                 return $matches[1];
+            }
+
+            if (preg_match('#^/media/(.+)$#', $storagePath, $matches)) {
+                return rawurldecode($matches[1]);
             }
 
             return $path;
@@ -85,5 +99,29 @@ class MediaUrl
         }
 
         return $appUrl.$path;
+    }
+
+    private static function useMediaRoute(): bool
+    {
+        return filter_var(env('MEDIA_USE_ROUTE', false), FILTER_VALIDATE_BOOL);
+    }
+
+    private static function mediaRouteUrl(string $relative): string
+    {
+        $appUrl = rtrim((string) config('app.url'), '/');
+
+        if (in_array(parse_url($appUrl, PHP_URL_HOST), ['127.0.0.1', 'localhost'], true)) {
+            $fallback = env('MEDIA_PUBLIC_URL');
+            if (is_string($fallback) && $fallback !== '') {
+                $appUrl = rtrim($fallback, '/');
+            }
+        }
+
+        $encodedPath = implode(
+            '/',
+            array_map('rawurlencode', explode('/', ltrim($relative, '/')))
+        );
+
+        return "{$appUrl}/media/{$encodedPath}";
     }
 }

@@ -12,9 +12,13 @@ export function normalizeAuthorImage(url?: string | null): string {
   return normalizeMediaUrl(url);
 }
 
-/** Same-origin path for Laravel public storage (proxied in next.config.ts). */
+/** Same-origin path for Laravel public media routes (proxied in next.config.ts). */
 export function toStoragePath(url: string): string | null {
   if (url.startsWith("/storage/")) {
+    return url;
+  }
+
+  if (url.startsWith("/media/")) {
     return url;
   }
 
@@ -22,7 +26,11 @@ export function toStoragePath(url: string): string | null {
     return `/${url}`;
   }
 
-  const match = url.match(/^https?:\/\/[^/]+(\/storage\/.*)$/i);
+  if (url.startsWith("media/")) {
+    return `/${url}`;
+  }
+
+  const match = url.match(/^https?:\/\/[^/]+(\/(?:storage|media)\/(?!https?:\/).*)$/i);
   if (match) {
     return match[1];
   }
@@ -32,7 +40,7 @@ export function toStoragePath(url: string): string | null {
 
 /**
  * Normalize post/media URLs for next/image.
- * Laravel storage files are served via same-origin /storage/* (Next.js rewrite → API).
+ * Laravel storage files are served via same-origin /storage/* or /media/*.
  */
 export function normalizeMediaUrl(url?: string | null): string {
   if (!url?.trim()) {
@@ -40,6 +48,13 @@ export function normalizeMediaUrl(url?: string | null): string {
   }
 
   const trimmed = url.trim();
+
+  // Legacy broken API shape: http://host/storage/https://cdn.example/...
+  const brokenStorage = trimmed.match(/^https?:\/\/[^/]+\/storage\/(https?:\/\/.+)$/i);
+  if (brokenStorage) {
+    return brokenStorage[1];
+  }
+
   const storagePath = toStoragePath(trimmed);
 
   if (storagePath) {

@@ -16,6 +16,12 @@ describe("toStoragePath", () => {
       toStoragePath("https://admin.rajeshcodes.in/storage/posts/01KSX.png")
     ).toBe("/storage/posts/01KSX.png");
   });
+
+  it("extracts shared-hosting media path from production admin URL", () => {
+    expect(
+      toStoragePath("https://admin.rajeshcodes.in/media/posts/01KSX.png")
+    ).toBe("/media/posts/01KSX.png");
+  });
 });
 
 describe("normalizeMediaUrl", () => {
@@ -31,5 +37,13 @@ describe("normalizeMediaUrl", () => {
     const url =
       "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80";
     expect(normalizeMediaUrl(url)).toBe(url);
+  });
+
+  it("repairs broken storage-prefixed CDN URLs from legacy API", () => {
+    expect(
+      normalizeMediaUrl(
+        "http://127.0.0.1:8001/storage/https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80"
+      )
+    ).toBe("https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80");
   });
 });
