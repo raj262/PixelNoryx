@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
+use App\Support\LegalPages;
 use App\Support\SeoSettings;
 use App\Support\SiteContent;
 use Illuminate\Http\JsonResponse;
@@ -65,6 +66,32 @@ class SiteController extends Controller
                 'avatar' => strtoupper(substr($t->name, 0, 1).substr(strstr($t->name, ' ') ?: '', 1, 1)),
                 'rating' => $t->rating,
             ]),
+        ]);
+    }
+
+    public function legalPages(): JsonResponse
+    {
+        return response()->json([
+            'data' => LegalPages::publishedIndex(),
+        ]);
+    }
+
+    public function legalPage(string $slug): JsonResponse
+    {
+        $page = LegalPages::find($slug);
+
+        if ($page === null || ! $page['isPublished']) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        return response()->json([
+            'data' => [
+                'slug' => $page['slug'],
+                'title' => $page['title'],
+                'path' => $page['path'],
+                'metaDescription' => $page['metaDescription'],
+                'content' => $page['content'],
+            ],
         ]);
     }
 }

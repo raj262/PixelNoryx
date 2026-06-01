@@ -15,7 +15,7 @@ export function normalizeAuthorImage(url?: string | null): string {
 /** Same-origin path for Laravel public media routes (proxied in next.config.ts). */
 export function toStoragePath(url: string): string | null {
   if (url.startsWith("/storage/")) {
-    return url;
+    return url.replace(/^\/storage\//, "/media/");
   }
 
   if (url.startsWith("/media/")) {
@@ -23,7 +23,7 @@ export function toStoragePath(url: string): string | null {
   }
 
   if (url.startsWith("storage/")) {
-    return `/${url}`;
+    return `/${url.replace(/^storage\//, "media/")}`;
   }
 
   if (url.startsWith("media/")) {
@@ -32,7 +32,7 @@ export function toStoragePath(url: string): string | null {
 
   const match = url.match(/^https?:\/\/[^/]+(\/(?:storage|media)\/(?!https?:\/).*)$/i);
   if (match) {
-    return match[1];
+    return match[1].replace(/^\/storage\//, "/media/");
   }
 
   return null;

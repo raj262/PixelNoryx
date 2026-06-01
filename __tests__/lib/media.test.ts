@@ -1,20 +1,20 @@
 import { normalizeMediaUrl, toStoragePath } from "@/lib/media";
 
 describe("toStoragePath", () => {
-  it("keeps /storage paths", () => {
-    expect(toStoragePath("/storage/posts/a.png")).toBe("/storage/posts/a.png");
+  it("rewrites /storage paths to /media", () => {
+    expect(toStoragePath("/storage/posts/a.png")).toBe("/media/posts/a.png");
   });
 
   it("extracts path from localhost URL", () => {
     expect(
       toStoragePath("http://127.0.0.1:8001/storage/posts/01KSX.png")
-    ).toBe("/storage/posts/01KSX.png");
+    ).toBe("/media/posts/01KSX.png");
   });
 
   it("extracts path from production admin URL", () => {
     expect(
       toStoragePath("https://admin.rajeshcodes.in/storage/posts/01KSX.png")
-    ).toBe("/storage/posts/01KSX.png");
+    ).toBe("/media/posts/01KSX.png");
   });
 
   it("extracts shared-hosting media path from production admin URL", () => {
@@ -25,12 +25,12 @@ describe("toStoragePath", () => {
 });
 
 describe("normalizeMediaUrl", () => {
-  it("rewrites localhost storage to same-origin path", () => {
+  it("rewrites localhost storage to shared-hosting media path", () => {
     expect(
       normalizeMediaUrl(
         "http://127.0.0.1:8001/storage/posts/01KSX38T4WYW0T7X060F7VKT4Z.png"
       )
-    ).toBe("/storage/posts/01KSX38T4WYW0T7X060F7VKT4Z.png");
+    ).toBe("/media/posts/01KSX38T4WYW0T7X060F7VKT4Z.png");
   });
 
   it("leaves external CDN URLs unchanged", () => {

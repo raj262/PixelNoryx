@@ -219,6 +219,7 @@ class ContentSeeder extends Seeder
         SiteSetting::setJson('nav_links', $contentDefaults['nav_links']);
         SiteSetting::setJson('footer_links', $contentDefaults['footer_links']);
         SiteSetting::setJson('subscribe_benefits', $contentDefaults['subscribe_benefits']);
+        SiteSetting::setJson('legal_pages', \App\Support\LegalPages::defaults());
 
         $adSeeds = [
             ['placement_key' => 'header', 'size' => 'leaderboard', 'title' => 'Ship 10x Faster with NovaCommerce', 'subtitle' => 'Multi-vendor ecommerce · React + Laravel', 'cta' => 'View Demo', 'href' => '#', 'sponsor' => 'Sponsored', 'gradient_key' => 'violetSunset', 'sort_order' => 1],

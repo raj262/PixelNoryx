@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Post;
 use App\Models\SiteSetting;
+use App\Support\LegalPages;
 use App\Support\MediaUrl;
 use App\Models\Testimonial;
 use App\Http\Resources\PostResource;
@@ -62,8 +63,9 @@ class SiteContent
                     ['label' => 'UI/UX', 'href' => '/archive?topic=UI/UX'],
                 ],
                 'legal' => [
-                    ['label' => 'Privacy', 'href' => '#'],
-                    ['label' => 'Terms', 'href' => '#'],
+                    ['label' => 'Privacy Policy', 'href' => '/privacy-policy'],
+                    ['label' => 'Disclaimer', 'href' => '/disclaimer'],
+                    ['label' => 'Terms & Conditions', 'href' => '/terms-and-conditions'],
                     ['label' => 'Contact', 'href' => '/#contact'],
                 ],
             ],
@@ -223,6 +225,7 @@ class SiteContent
             'ads' => self::adsPayload(),
             'ai' => self::aiPayload(),
             'whatsapp' => self::whatsappPayload(),
+            'legalPages' => LegalPages::publishedIndex(),
         ];
     }
 
