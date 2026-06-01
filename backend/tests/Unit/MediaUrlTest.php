@@ -9,6 +9,14 @@ use Tests\TestCase;
 
 class MediaUrlTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        putenv('MEDIA_USE_ROUTE');
+        putenv('MEDIA_PUBLIC_URL');
+
+        parent::tearDown();
+    }
+
     public function test_rewrites_localhost_url_to_app_url(): void
     {
         Config::set('app.url', 'https://admin.rajeshcodes.in');
@@ -43,5 +51,61 @@ class MediaUrlTest extends TestCase
 
         $this->assertTrue(Storage::disk('public')->exists('posts/legacy.png'));
         $this->assertStringContainsString('/storage/posts/legacy.png', $url);
+    }
+
+    public function test_normalizes_localhost_full_url_in_database(): void
+    {
+        Config::set('app.url', 'https://admin.rajeshcodes.in');
+
+        Storage::fake('local');
+        Storage::fake('public');
+
+        Storage::disk('local')->put('posts/from-db.png', 'img');
+
+        $url = MediaUrl::public('http://127.0.0.1:8001/storage/posts/from-db.png');
+
+        $this->assertStringContainsString('/storage/posts/from-db.png', $url);
+        $this->assertTrue(Storage::disk('public')->exists('posts/from-db.png'));
+    }
+
+    public function test_normalize_stored_path_strips_localhost_url(): void
+    {
+        $this->assertSame(
+            'posts/test.png',
+            MediaUrl::normalizeStoredPath('http://127.0.0.1:8001/storage/posts/test.png')
+        );
+    }
+
+    public function test_leaves_external_cdn_url_unchanged(): void
+    {
+        $url = 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80';
+
+        $this->assertSame($url, MediaUrl::public($url));
+    }
+
+    public function test_returns_media_route_url_when_enabled(): void
+    {
+        Config::set('app.url', 'https://admin.rajeshcodes.in');
+        putenv('MEDIA_USE_ROUTE=true');
+
+        Storage::fake('local');
+        Storage::fake('public');
+
+        Storage::disk('public')->put('posts/shared host.webp', 'img');
+
+        $url = MediaUrl::public('posts/shared host.webp');
+
+        $this->assertSame(
+            'https://admin.rajeshcodes.in/media/posts/shared%20host.webp',
+            $url
+        );
+    }
+
+    public function test_normalize_stored_path_strips_media_url(): void
+    {
+        $this->assertSame(
+            'posts/shared host.webp',
+            MediaUrl::normalizeStoredPath('https://admin.rajeshcodes.in/media/posts/shared%20host.webp')
+        );
     }
 }

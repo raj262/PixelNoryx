@@ -34,6 +34,12 @@ class AnalyticsDashboard extends Page
     /** @var list<array{path: string, views: int}> */
     public array $topPages = [];
 
+    /** @var list<array{channel: string, sessions: int}> */
+    public array $trafficChannels = [];
+
+    /** @var list<array{source: string, medium: string, sessions: int}> */
+    public array $topSources = [];
+
     public bool $configured = false;
 
     public ?string $error = null;
@@ -81,6 +87,8 @@ class AnalyticsDashboard extends Page
         $this->overview = [];
         $this->daily = [];
         $this->topPages = [];
+        $this->trafficChannels = [];
+        $this->topSources = [];
 
         if (! $this->configured) {
             return;
@@ -90,6 +98,8 @@ class AnalyticsDashboard extends Page
             $this->overview = $analytics->overview($this->days);
             $this->daily = $analytics->dailySessions($this->days);
             $this->topPages = $analytics->topPages(10, $this->days);
+            $this->trafficChannels = $analytics->trafficChannels(10, $this->days);
+            $this->topSources = $analytics->topSources(10, $this->days);
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();
         }

@@ -105,6 +105,89 @@ class GoogleAnalyticsService
     }
 
     /**
+     * @return list<array{channel: string, sessions: int}>
+     */
+    public function trafficChannels(int $limit = 10, int $days = 28): array
+    {
+        return Cache::remember("ga_traffic_channels_{$limit}_{$days}", config('analytics.cache_ttl'), function () use ($limit, $days) {
+            $response = $this->client()->runReport(new RunReportRequest([
+                'property' => $this->property(),
+                'date_ranges' => [
+                    new DateRange([
+                        'start_date' => "{$days}daysAgo",
+                        'end_date' => 'today',
+                    ]),
+                ],
+                'dimensions' => [new Dimension(['name' => 'sessionDefaultChannelGroup'])],
+                'metrics' => [new Metric(['name' => 'sessions'])],
+                'order_bys' => [
+                    new OrderBy([
+                        'metric' => new MetricOrderBy([
+                            'metric_name' => 'sessions',
+                        ]),
+                        'desc' => true,
+                    ]),
+                ],
+                'limit' => $limit,
+            ]));
+
+            $out = [];
+            foreach ($response->getRows() as $row) {
+                $out[] = [
+                    'channel' => $row->getDimensionValues()[0]?->getValue() ?? 'Unknown',
+                    'sessions' => (int) ($row->getMetricValues()[0]?->getValue() ?? 0),
+                ];
+            }
+
+            return $out;
+        });
+    }
+
+    /**
+     * @return list<array{source: string, medium: string, sessions: int}>
+     */
+    public function topSources(int $limit = 10, int $days = 28): array
+    {
+        return Cache::remember("ga_top_sources_{$limit}_{$days}", config('analytics.cache_ttl'), function () use ($limit, $days) {
+            $response = $this->client()->runReport(new RunReportRequest([
+                'property' => $this->property(),
+                'date_ranges' => [
+                    new DateRange([
+                        'start_date' => "{$days}daysAgo",
+                        'end_date' => 'today',
+                    ]),
+                ],
+                'dimensions' => [
+                    new Dimension(['name' => 'sessionSource']),
+                    new Dimension(['name' => 'sessionMedium']),
+                ],
+                'metrics' => [new Metric(['name' => 'sessions'])],
+                'order_bys' => [
+                    new OrderBy([
+                        'metric' => new MetricOrderBy([
+                            'metric_name' => 'sessions',
+                        ]),
+                        'desc' => true,
+                    ]),
+                ],
+                'limit' => $limit,
+            ]));
+
+            $out = [];
+            foreach ($response->getRows() as $row) {
+                $dimensions = $row->getDimensionValues();
+                $out[] = [
+                    'source' => $dimensions[0]?->getValue() ?? '(unknown)',
+                    'medium' => $dimensions[1]?->getValue() ?? '(unknown)',
+                    'sessions' => (int) ($row->getMetricValues()[0]?->getValue() ?? 0),
+                ];
+            }
+
+            return $out;
+        });
+    }
+
+    /**
      * @return list<array{path: string, views: int}>
      */
     public function topPages(int $limit = 10, int $days = 28): array
@@ -149,6 +232,8 @@ class GoogleAnalyticsService
             Cache::forget("ga_overview_{$days}");
             Cache::forget("ga_daily_{$days}");
             Cache::forget("ga_top_pages_10_{$days}");
+            Cache::forget("ga_traffic_channels_10_{$days}");
+            Cache::forget("ga_top_sources_10_{$days}");
         }
     }
 
