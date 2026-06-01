@@ -70,6 +70,12 @@ export interface WhatsAppPayload {
   url: string | null;
 }
 
+export interface LegalPageIndexItem {
+  slug: string;
+  title: string;
+  path: string;
+}
+
 export interface SiteBootstrap {
   settings: SiteSettingsPayload;
   categories: CategoryPayload[];
@@ -80,4 +86,5 @@ export interface SiteBootstrap {
   ads: Record<string, AdPlacement>;
   ai?: AiStatusPayload;
   whatsapp?: WhatsAppPayload;
+  legalPages?: LegalPageIndexItem[];
 }

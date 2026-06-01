@@ -339,8 +339,9 @@ export const footerLinks = {
     { label: "UI/UX", href: "/archive?topic=UI/UX" },
   ],
   legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Disclaimer", href: "/disclaimer" },
+    { label: "Terms & Conditions", href: "/terms-and-conditions" },
     { label: "Contact", href: "/#contact" },
   ],
 };

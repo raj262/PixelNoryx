@@ -52,6 +52,16 @@ module.exports = {
             priority: 0.6,
           });
         }
+
+        for (const page of data?.legalPages ?? []) {
+          if (!page?.path) continue;
+
+          paths.push({
+            loc: page.path,
+            changefreq: "monthly",
+            priority: 0.5,
+          });
+        }
       }
     } catch (error) {
       console.warn("[next-sitemap] Could not fetch API paths:", error);

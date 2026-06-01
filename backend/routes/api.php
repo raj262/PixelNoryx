@@ -22,6 +22,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/seo', [SiteController::class, 'seo']);
     Route::get('/faqs', [SiteController::class, 'faqs']);
     Route::get('/testimonials', [SiteController::class, 'testimonials']);
+    Route::get('/legal-pages', [SiteController::class, 'legalPages']);
+    Route::get('/legal-pages/{slug}', [SiteController::class, 'legalPage']);
 
     Route::post('/subscribe', [SubscriberController::class, 'store']);
     Route::post('/contact', [ContactController::class, 'store']);

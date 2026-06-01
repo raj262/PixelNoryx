@@ -120,6 +120,15 @@ export function buildFallbackBootstrap(): SiteBootstrap {
       message: "",
       url: null,
     },
+    legalPages: [
+      { slug: "privacy-policy", title: "Privacy Policy", path: "/privacy-policy" },
+      { slug: "disclaimer", title: "Disclaimer", path: "/disclaimer" },
+      {
+        slug: "terms-and-conditions",
+        title: "Terms and Conditions",
+        path: "/terms-and-conditions",
+      },
+    ],
   };
 }
 
@@ -150,6 +159,7 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
       message: "",
       url: null,
     },
+    legalPages: data.legalPages ?? buildFallbackBootstrap().legalPages,
   };
 }
 
