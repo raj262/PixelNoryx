@@ -1,18 +1,13 @@
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
-import GoogleAdSense from "@/components/analytics/GoogleAdSense";
 import MicrosoftClarity from "@/components/analytics/MicrosoftClarity";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID?.trim();
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
 
-/** GTM + AdSense in <html> (per Next.js / Google docs). */
+/** GTM in <html> head (per Next.js docs). AdSense script is inlined in app/layout.tsx for crawler verification. */
 export function ThirdPartyHead() {
-  return (
-    <>
-      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
-      <GoogleAdSense />
-    </>
-  );
+  if (!gtmId) return null;
+  return <GoogleTagManager gtmId={gtmId} />;
 }
 
 /** Analytics at end of <html>. */
