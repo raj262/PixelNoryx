@@ -8,6 +8,7 @@ import ClientShell from "@/components/layout/ClientShell";
 import AppProviders from "@/components/providers/AppProviders";
 import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
 import { getBootstrap, fetchSeo } from "@/lib/cms";
+import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_SRC } from "@/lib/adsense";
 import { buildSiteMetadata } from "@/lib/seo";
 import { ThirdPartyFoot, ThirdPartyHead } from "@/components/analytics/ThirdPartyScripts";
 
@@ -52,7 +53,16 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
     >
-      <ThirdPartyHead />
+      <head>
+        {ADSENSE_CLIENT_ID ? (
+          <script
+            async
+            src={ADSENSE_SCRIPT_SRC}
+            crossOrigin="anonymous"
+          />
+        ) : null}
+        <ThirdPartyHead />
+      </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <SiteDataProvider data={siteData}>
           <AppProviders>
