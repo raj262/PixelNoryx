@@ -68,6 +68,26 @@
     @apply mb-4 mt-10 font-display text-2xl font-bold text-foreground;
   }
 
+  .prose-article h3 {
+    @apply mb-3 mt-6 font-display text-xl font-semibold text-foreground;
+  }
+
+  .prose-article ul {
+    @apply mb-5 list-disc space-y-2 pl-6;
+  }
+
+  .prose-article li {
+    @apply leading-relaxed;
+  }
+
+  .prose-article a {
+    @apply font-medium text-primary underline-offset-2 hover:underline;
+  }
+
+  .prose-article strong {
+    @apply font-semibold text-foreground;
+  }
+
   .ad-slot-label {
     @apply mb-2 text-center text-[10px] font-medium uppercase tracking-[0.25em] text-muted;
   }

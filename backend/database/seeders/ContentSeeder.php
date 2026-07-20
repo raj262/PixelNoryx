@@ -220,6 +220,33 @@ class ContentSeeder extends Seeder
         SiteSetting::setJson('footer_links', $contentDefaults['footer_links']);
         SiteSetting::setJson('subscribe_benefits', $contentDefaults['subscribe_benefits']);
         SiteSetting::setJson('legal_pages', \App\Support\LegalPages::defaults());
+        \App\Support\LegalPages::syncFooterLegalLinks();
+
+        $keywordSeeds = [
+            ['keyword' => 'React Server Components production patterns', 'category' => 'React.js', 'priority' => 'high'],
+            ['keyword' => 'Laravel queues and Horizon for SaaS', 'category' => 'Laravel', 'priority' => 'high'],
+            ['keyword' => 'Next.js App Router SEO checklist', 'category' => 'Frontend', 'priority' => 'normal'],
+            ['keyword' => 'Building multi-tenant SaaS with Laravel', 'category' => 'SaaS', 'priority' => 'normal'],
+            ['keyword' => 'REST API versioning best practices', 'category' => 'APIs', 'priority' => 'normal'],
+            ['keyword' => 'Dark mode UI conversion patterns', 'category' => 'UI/UX', 'priority' => 'low'],
+            ['keyword' => 'Headless ecommerce with React and Laravel', 'category' => 'Ecommerce', 'priority' => 'normal'],
+            ['keyword' => 'Indie hacker launch checklist 2026', 'category' => 'Startup', 'priority' => 'low'],
+        ];
+
+        foreach ($keywordSeeds as $seed) {
+            \App\Models\KeywordPoolItem::firstOrCreate(
+                ['keyword' => $seed['keyword']],
+                [
+                    'category_id' => $categories[$seed['category']]->id ?? null,
+                    'priority' => $seed['priority'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        if (! SiteSetting::query()->where('key', \App\Support\AutoBlogSettings::KEY)->exists()) {
+            \App\Support\AutoBlogSettings::save(\App\Support\AutoBlogSettings::defaults());
+        }
 
         $adSeeds = [
             ['placement_key' => 'header', 'size' => 'leaderboard', 'title' => 'Ship 10x Faster with NovaCommerce', 'subtitle' => 'Multi-vendor ecommerce · React + Laravel', 'cta' => 'View Demo', 'href' => '#', 'sponsor' => 'Sponsored', 'gradient_key' => 'violetSunset', 'sort_order' => 1],

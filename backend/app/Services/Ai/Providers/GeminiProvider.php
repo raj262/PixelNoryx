@@ -10,7 +10,7 @@ class GeminiProvider
     /**
      * @param  array<int, array{role: string, content: string}>  $messages
      */
-    public function complete(array $messages, bool $json = false): string
+    public function complete(array $messages, bool $json = false, ?int $maxTokens = null): string
     {
         $apiKey = config('ai.api_key');
         $model = config('ai.model');
@@ -18,7 +18,7 @@ class GeminiProvider
 
         if (! filled($apiKey)) {
             throw new RuntimeException(
-                'AI is not configured. Add GEMINI_API_KEY from Google AI Studio (https://aistudio.google.com/apikey) to backend/.env'
+                'AI is not configured. Add a Gemini API key in Admin → Settings → AI / ChatGPT.'
             );
         }
 
@@ -50,7 +50,7 @@ class GeminiProvider
             'contents' => $contents,
             'generationConfig' => [
                 'temperature' => config('ai.temperature'),
-                'maxOutputTokens' => config('ai.max_tokens'),
+                'maxOutputTokens' => $maxTokens ?? config('ai.max_tokens'),
             ],
         ];
 
@@ -64,7 +64,7 @@ class GeminiProvider
 
         $url = "{$baseUrl}/models/{$model}:generateContent?key=".urlencode($apiKey);
 
-        $response = Http::timeout(90)
+        $response = Http::timeout(180)
             ->acceptJson()
             ->post($url, $body);
 

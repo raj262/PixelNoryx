@@ -1,6 +1,6 @@
 <?php
 
-$provider = env('AI_PROVIDER', 'gemini');
+$provider = env('AI_PROVIDER', 'openai');
 
 return [
     'enabled' => env('AI_ENABLED', true),
@@ -22,11 +22,16 @@ return [
         ? 'gemini-2.0-flash'
         : 'gpt-4o-mini'),
 
-    'max_tokens' => (int) env('AI_MAX_TOKENS', 2000),
+    'max_tokens' => (int) env('AI_MAX_TOKENS', 4096),
 
     'temperature' => (float) env('AI_TEMPERATURE', 0.7),
 
     'rate_limit_per_minute' => (int) env('AI_RATE_LIMIT', 20),
 
     'chat_system_prompt' => env('AI_CHAT_PROMPT', null),
+
+    'auto_blog' => [
+        'enabled' => env('AUTO_BLOG_ENABLED', false),
+        'command' => 'blog:generate-daily',
+    ],
 ];

@@ -21,6 +21,7 @@ class PostResource extends JsonResource
             'excerpt' => $this->excerpt,
             'preview' => $this->preview,
             'content' => $this->content,
+            'faqs' => $this->faqs ?? [],
             'image' => $image,
             'topic' => $this->category?->name,
             'category' => $this->category?->name,

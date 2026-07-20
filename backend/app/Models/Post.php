@@ -22,6 +22,7 @@ class Post extends Model
         'excerpt',
         'preview',
         'content',
+        'faqs',
         'image',
         'og_image',
         'canonical_url',
@@ -43,6 +44,7 @@ class Post extends Model
             'is_free' => 'boolean',
             'is_sponsored' => 'boolean',
             'published_at' => 'datetime',
+            'faqs' => 'array',
         ];
     }
 

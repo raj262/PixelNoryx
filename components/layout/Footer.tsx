@@ -5,19 +5,21 @@ import Image from "next/image";
 import { usePosts, useSiteConfig, useSiteData } from "@/components/providers/SiteDataProvider";
 import SubscribeForm from "@/components/newsletter/SubscribeForm";
 import DynamicIcon from "@/components/ui/IconMap";
+import { resolveLegalNavLinks } from "@/lib/legal-nav";
 
 export default function Footer() {
   const posts = usePosts();
   const siteConfig = useSiteConfig();
-  const { settings } = useSiteData();
+  const { settings, legalPages } = useSiteData();
   const { footerLinks, socialLinks } = settings;
+  const legalLinks = resolveLegalNavLinks(legalPages, footerLinks.legal);
   const recent = posts.slice(0, 2);
   const year = new Date().getFullYear();
 
   return (
     <footer className="mt-16 border-t-4 border-primary bg-surface-dark text-white">
       <div className="magazine-container py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <Link href="/" className="font-display text-2xl font-black uppercase">
               Pixel<span className="text-primary">Noryx</span>
@@ -79,6 +81,37 @@ export default function Footer() {
 
           <div>
             <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">
+              Legal
+            </h4>
+            <ul className="space-y-2">
+              {legalLinks.map((link) => {
+                const isPrivacy = link.slug === "privacy-policy";
+
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={
+                        isPrivacy
+                          ? "inline-flex items-center rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-primary hover:text-white"
+                          : "text-sm text-white/60 hover:text-primary"
+                      }
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+              <li>
+                <Link href="/#contact" className="text-sm text-white/60 hover:text-primary">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">
               Newsletter
             </h4>
             <p className="mb-4 text-sm text-white/60">
@@ -88,7 +121,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/50 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/50 lg:flex-row">
           <p>© {year} {siteConfig.name}. All Rights Reserved.</p>
           <p>
             Developed by{" "}
@@ -101,10 +134,18 @@ export default function Footer() {
               Rajesh
             </a>
           </p>
-          <div className="flex gap-6">
-            {footerLinks.legal.map((l) => (
-              <Link key={l.label} href={l.href} className="hover:text-primary">
-                {l.label}
+          <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={
+                  link.slug === "privacy-policy"
+                    ? "font-semibold text-white hover:text-primary"
+                    : "hover:text-primary"
+                }
+              >
+                {link.label}
               </Link>
             ))}
           </div>

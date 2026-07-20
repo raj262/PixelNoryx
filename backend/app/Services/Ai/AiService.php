@@ -6,6 +6,7 @@ use App\Models\Faq;
 use App\Models\Post;
 use App\Services\Ai\Providers\GeminiProvider;
 use App\Services\Ai\Providers\OpenAiProvider;
+use App\Support\AiSettings;
 use App\Support\SiteContent;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -18,17 +19,17 @@ class AiService
     ) {}
     public function isConfigured(): bool
     {
-        if (! config('ai.enabled')) {
-            return false;
-        }
+        AiSettings::apply();
 
-        return filled(config('ai.api_key'));
+        return AiSettings::isConfigured();
     }
 
     public function status(): array
     {
+        AiSettings::apply();
+
         return [
-            'enabled' => $this->isConfigured(),
+            'enabled' => AiSettings::isConfigured(),
             'model' => config('ai.model'),
             'provider' => config('ai.provider'),
         ];
@@ -50,10 +51,12 @@ class AiService
     /**
      * @param  array<string, mixed>  $context
      */
-    public function generate(string $type, string $prompt, array $context = []): array
+    public function generate(string $type, string $prompt, array $context = [], ?int $maxTokens = null): array
     {
         $system = match ($type) {
             'post_draft' => AiPrompts::postDraft(),
+            'topic_research' => AiPrompts::topicResearch(),
+            'daily_article' => AiPrompts::dailyArticle(),
             'faq' => AiPrompts::faq(),
             'ad_copy' => AiPrompts::adCopy(),
             'seo' => AiPrompts::seoImprove(),
@@ -68,7 +71,7 @@ class AiService
         $raw = $this->completion([
             ['role' => 'system', 'content' => $system],
             ['role' => 'user', 'content' => $userContent],
-        ], json: $this->usesGemini());
+        ], json: $this->usesGemini(), maxTokens: $maxTokens);
 
         return $this->parseJsonResponse($raw);
     }
@@ -123,21 +126,23 @@ class AiService
     /**
      * @param  array<int, array{role: string, content: string}>  $messages
      */
-    protected function completion(array $messages, bool $json = false): string
+    protected function completion(array $messages, bool $json = false, ?int $maxTokens = null): string
     {
+        AiSettings::apply();
+
         if (! $this->isConfigured()) {
             throw new RuntimeException(
                 $this->usesGemini()
-                    ? 'AI is not configured. Add GEMINI_API_KEY from Google AI Studio to backend/.env'
-                    : 'AI is not configured. Add OPENAI_API_KEY to backend/.env'
+                    ? 'AI is not configured. Add a Gemini API key in Admin → Settings → AI / ChatGPT.'
+                    : 'AI is not configured. Add your ChatGPT (OpenAI) API key in Admin → Settings → AI / ChatGPT.'
             );
         }
 
         if ($this->usesGemini()) {
-            return $this->gemini->complete($messages, $json);
+            return $this->gemini->complete($messages, $json, $maxTokens);
         }
 
-        return $this->openAi->complete($messages);
+        return $this->openAi->complete($messages, $maxTokens);
     }
 
     /**

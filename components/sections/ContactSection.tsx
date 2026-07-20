@@ -18,7 +18,6 @@ import AnimateIn from "@/components/ui/AnimateIn";
 export default function ContactSection() {
   const siteConfig = useSiteConfig();
   const { settings } = useSiteData();
-  const socialStats = settings.socialStats;
   const contactEmail = settings.contactEmail;
   const whatsapp = useWhatsApp();
 
@@ -133,26 +132,6 @@ export default function ContactSection() {
                       );
                     })}
                   </ul>
-
-                  <div className="mt-10 border-t border-white/10 pt-8">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-white/50">
-                      Follow us
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {socialStats.map((s) => (
-                        <a
-                          key={s.label}
-                          href={s.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 transition-colors hover:border-primary/50 hover:bg-primary/20 hover:text-white"
-                        >
-                          {s.label}
-                          <span className="ml-1.5 text-white/40">{s.count}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
 
