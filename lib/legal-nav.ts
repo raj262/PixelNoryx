@@ -18,14 +18,14 @@ export interface LegalNavLink {
 
 /** Prefer API legal pages; ignore stale footer `#` links from old admin data. */
 export function resolveLegalNavLinks(
-  legalPages?: LegalPageIndexItem[],
+  legalPages?: Array<{ slug: string; title: string; path: string }>,
   footerLegal?: LegalNavLink[]
 ): LegalNavLink[] {
   if (legalPages?.length) {
     return legalPages.map((page) => ({
       label: page.title,
       href: page.path,
-      slug: page.slug,
+      slug: isLegalPageSlug(page.slug) ? page.slug : undefined,
     }));
   }
 
@@ -61,4 +61,8 @@ export function resolveLegalNavLinks(
     href: page.path,
     slug: page.slug,
   }));
+}
+
+function isLegalPageSlug(value: string): value is LegalPageSlug {
+  return CANONICAL_LEGAL_PAGES.some((page) => page.slug === value);
 }

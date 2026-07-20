@@ -1,4 +1,5 @@
 import type { AdPlacement } from "@/lib/ads";
+import type { LegalPageIndexItem } from "@/lib/legal-pages";
 import type { NewsletterIssue } from "@/lib/types";
 
 export interface SiteSettingsPayload {
@@ -70,11 +71,7 @@ export interface WhatsAppPayload {
   url: string | null;
 }
 
-export interface LegalPageIndexItem {
-  slug: string;
-  title: string;
-  path: string;
-}
+export type { LegalPageIndexItem };
 
 export interface SiteBootstrap {
   settings: SiteSettingsPayload;
