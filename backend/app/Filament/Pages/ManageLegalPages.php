@@ -63,7 +63,7 @@ class ManageLegalPages extends Page
         return $schema
             ->components([
                 Section::make('Privacy Policy')
-                    ->description('Public URL: /privacy-policy')
+                    ->description('Public URL: /privacy-policy — required for Google AdSense approval. Include cookies, analytics, and advertising disclosures.')
                     ->schema([
                         Toggle::make('privacy_policy_is_published')
                             ->label('Published')

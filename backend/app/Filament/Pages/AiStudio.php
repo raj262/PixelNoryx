@@ -94,8 +94,8 @@ class AiStudio extends Page
                     ]),
                 Section::make('AI status')
                     ->description($aiConfigured
-                        ? 'Connected to '.config('ai.model').'. Frontend widget: '.($chatOnSite ? 'ON' : 'OFF').'.'
-                        : 'Set GEMINI_API_KEY from Google AI Studio in backend/.env, then restart php artisan serve.'),
+                        ? 'Connected to '.config('ai.model').' ('.config('ai.provider').'). Frontend widget: '.($chatOnSite ? 'ON' : 'OFF').'.'
+                        : 'Add your ChatGPT / OpenAI key in Settings → AI / ChatGPT, then refresh this page.'),
                 Section::make('Site assistant (test)')
                     ->schema([
                         Textarea::make('chat_message')

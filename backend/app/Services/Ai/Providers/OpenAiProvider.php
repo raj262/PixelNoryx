@@ -10,21 +10,21 @@ class OpenAiProvider
     /**
      * @param  array<int, array{role: string, content: string}>  $messages
      */
-    public function complete(array $messages): string
+    public function complete(array $messages, ?int $maxTokens = null): string
     {
         $apiKey = config('ai.api_key');
 
         if (! filled($apiKey)) {
-            throw new RuntimeException('AI is not configured. Add OPENAI_API_KEY to backend/.env');
+            throw new RuntimeException('AI is not configured. Add your ChatGPT (OpenAI) API key in Admin → Settings → AI / ChatGPT.');
         }
 
-        $response = Http::timeout(90)
+        $response = Http::timeout(180)
             ->withToken($apiKey)
             ->acceptJson()
             ->post(config('ai.base_url').'/chat/completions', [
                 'model' => config('ai.model'),
                 'messages' => $messages,
-                'max_tokens' => config('ai.max_tokens'),
+                'max_tokens' => $maxTokens ?? config('ai.max_tokens'),
                 'temperature' => config('ai.temperature'),
             ]);
 

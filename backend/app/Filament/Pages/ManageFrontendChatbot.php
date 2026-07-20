@@ -86,10 +86,10 @@ class ManageFrontendChatbot extends Page
                 Section::make('Status')
                     ->schema([
                         Placeholder::make('gemini_status')
-                            ->label('Gemini API (backend)')
+                            ->label('AI API (backend)')
                             ->content($configured
                                 ? 'Connected — '.config('ai.model').' ('.config('ai.provider').')'
-                                : 'Not configured — add GEMINI_API_KEY to backend/.env and restart `php artisan serve`.'),
+                                : 'Not configured — add your ChatGPT key in Settings → AI / ChatGPT.'),
                         Placeholder::make('widget_status')
                             ->label('Widget on public site')
                             ->content(function () use ($configured, $chatOn): string {

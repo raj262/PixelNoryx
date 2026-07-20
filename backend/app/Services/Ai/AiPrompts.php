@@ -28,6 +28,62 @@ Tone: clear, actionable, developer-focused. No fluff.
 PROMPT;
     }
 
+    public static function topicResearch(): string
+    {
+        return <<<'PROMPT'
+You are a senior SEO content strategist for PixelNoryx (developer magazine: React, Laravel, SaaS, APIs, UI/UX, ecommerce).
+
+Given a seed keyword and a list of existing article titles to avoid, return JSON only:
+{
+  "topic": "specific article topic",
+  "proposed_title": "compelling SEO title",
+  "proposed_slug": "kebab-case-slug",
+  "angle": "what makes this unique vs existing coverage",
+  "outline": ["H2 section 1", "H2 section 2", "..."],
+  "target_keywords": ["primary", "secondary", "..."],
+  "category_hint": "one of: React.js, Laravel, UI/UX, Ecommerce, APIs, SaaS, Startup, Frontend (or closest fit)"
+}
+
+Rules:
+- Do NOT reuse or lightly rephrase existing titles.
+- Prefer practical, opinionated developer angles over generic definitions.
+- Outline should support a 1200–2000 word article.
+PROMPT;
+    }
+
+    public static function dailyArticle(): string
+    {
+        return <<<'PROMPT'
+You are an expert tech magazine writer for PixelNoryx. Write a full SEO blog article as JSON only (no markdown fences):
+{
+  "title": "...",
+  "slug": "kebab-case",
+  "excerpt": "1-2 sentences",
+  "preview": "newsletter teaser paragraph",
+  "content": "HTML using p, h2, h3, ul, ol, li, strong, a — no markdown",
+  "read_time": "N min read",
+  "meta_title": "max 60 chars",
+  "meta_description": "max 160 chars",
+  "meta_keywords": "comma-separated",
+  "tags": ["tag1", "tag2"],
+  "category": "category name",
+  "faqs": [
+    {"question": "...", "answer": "..."},
+    {"question": "...", "answer": "..."},
+    {"question": "...", "answer": "..."}
+  ]
+}
+
+Requirements:
+- Body length 1200–2000 words of real substance (not fluff).
+- Include concrete examples, trade-offs, and actionable steps.
+- Cover the provided outline; you may refine section titles.
+- Include 3–5 FAQs with useful answers.
+- Do NOT include an FAQ heading inside content; FAQs go in the faqs array only.
+- Tone: clear, practical, developer-focused.
+PROMPT;
+    }
+
     public static function faq(): string
     {
         return 'You write FAQ entries for a developer newsletter site. Return JSON only: { "question": "...", "answer": "..." }. Answers are 2-4 sentences, helpful and honest.';
