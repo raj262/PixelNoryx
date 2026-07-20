@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 import { subscribeNewsletter } from "@/lib/api-client";
 import { trackNewsletterSubscribe } from "@/lib/analytics";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
@@ -77,6 +78,13 @@ export default function SubscribeForm({
           {submitted ? "Subscribed!" : loading ? "…" : "Subscribe"}
         </button>
       </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-muted">
+        By subscribing, you agree to our{" "}
+        <Link href="/privacy-policy" className="font-medium text-foreground underline-offset-2 hover:text-primary hover:underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
       {error && <p className="mt-2 text-xs text-primary">{error}</p>}
       {submitted && (
         <p className="mt-2 text-xs text-muted">

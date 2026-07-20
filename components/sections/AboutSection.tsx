@@ -12,7 +12,6 @@ export default function AboutSection() {
   const siteConfig = useSiteConfig();
   const { settings } = useSiteData();
   const { author } = siteConfig;
-  const socialStats = settings.socialStats;
   const firstName = author.name.split(" ")[0] ?? author.name;
   const authorImage = normalizeAuthorImage(author.image);
 
@@ -63,21 +62,6 @@ export default function AboutSection() {
                     {author.name}
                   </p>
                   <p className="mt-2 text-sm font-semibold text-primary">{author.role}</p>
-
-                  <div className="mt-6 flex flex-wrap gap-2 sm:mt-8">
-                    {socialStats.slice(0, 3).map((s) => (
-                      <a
-                        key={s.label}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-sm transition-colors hover:border-primary/40 hover:bg-primary/20"
-                      >
-                        {s.label}{" "}
-                        <span className="text-white/50">{s.count}</span>
-                      </a>
-                    ))}
-                  </div>
                 </div>
               </div>
 

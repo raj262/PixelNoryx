@@ -15,7 +15,6 @@ export default function Sidebar() {
   const siteConfig = useSiteConfig();
   const { settings } = useSiteData();
   const socialLinks = settings.socialLinks;
-  const socialStats = settings.socialStats;
   const trending = posts.slice(0, 5);
   const editorsChoice = posts.filter((i) => i.featured).slice(0, 4);
 
@@ -46,21 +45,7 @@ export default function Sidebar() {
       <AnimateIn direction="left" delay={0.25}>
         <div className="sidebar-widget">
           <h3 className="font-display text-xl font-bold">Follow Us</h3>
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            {socialStats.map((stat) => (
-              <a
-                key={stat.label}
-                href={stat.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col items-center rounded-xl border border-border bg-surface py-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/5"
-              >
-                <span className="font-display text-xl font-bold">{stat.count}</span>
-                <span className="mt-1 text-xs text-muted">{stat.label}</span>
-              </a>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-center gap-3">
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
             {socialLinks.map((s) => (
               <a
                 key={s.label}
