@@ -125,7 +125,8 @@ class ManageSeo extends Page
                             ->label('Twitter / X handle')
                             ->placeholder('@pixelnoryx'),
                         TextInput::make('seo_google_site_verification')
-                            ->label('Google Search Console verification'),
+                            ->label('Google Search Console verification')
+                            ->helperText('Paste the content token only, or the full google-site-verification=… value.'),
                         TextInput::make('seo_bing_site_verification')
                             ->label('Bing Webmaster verification'),
                     ])

@@ -75,7 +75,7 @@ class ManageSiteContent extends Page
                     ])
                     ->columns(2),
                 Section::make('AI chatbot (frontend)')
-                    ->description('Same settings as Settings → AI Chatbot. Requires GEMINI_API_KEY in backend/.env.')
+                    ->description('Same settings as Settings → AI Chatbot. Requires OpenAI (ChatGPT) API key in Settings → AI / ChatGPT.')
                     ->schema([
                         Toggle::make('ai_chat_enabled')
                             ->label('Enable chatbot on frontend')

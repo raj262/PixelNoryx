@@ -36,7 +36,7 @@ class ManageAiSettings extends Page
 
     protected static ?int $navigationSort = 5;
 
-    protected static ?string $title = 'AI & ChatGPT Tokens';
+    protected static ?string $title = 'ChatGPT (OpenAI)';
 
     protected string $view = 'filament-panels::pages.page';
 
@@ -60,46 +60,37 @@ class ManageAiSettings extends Page
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Provider & API tokens')
-                ->description('Manage ChatGPT / OpenAI or Gemini keys from admin. Keys are stored encrypted. Env keys are used only as fallback.')
+            Section::make('ChatGPT API')
+                ->description('Uses OpenAI ChatGPT only (not Gemini). Get your key from platform.openai.com. Keys are stored encrypted.')
                 ->schema([
                     Toggle::make('ai_enabled')
-                        ->label('Enable AI')
+                        ->label('Enable ChatGPT')
                         ->live(),
-                    Select::make('ai_provider')
-                        ->label('Provider')
-                        ->options([
-                            'openai' => 'OpenAI (ChatGPT)',
-                            'gemini' => 'Google Gemini',
-                        ])
-                        ->required()
-                        ->live()
-                        ->helperText('Use OpenAI for ChatGPT models (gpt-4o-mini, gpt-4o, etc.).'),
                     TextInput::make('openai_api_key')
-                        ->label('OpenAI / ChatGPT API key')
+                        ->label('OpenAI API key')
                         ->password()
                         ->revealable()
-                        ->visible(fn (): bool => ($this->data['ai_provider'] ?? 'openai') === 'openai')
                         ->helperText(fn (): string => ($this->data['openai_api_key_set'] ?? false)
-                            ? 'Leave blank to keep the current key. Get a key from platform.openai.com'
+                            ? 'Leave blank to keep the current key.'
                             : 'Paste your sk-… key from platform.openai.com')
                         ->dehydrated(fn ($state) => filled($state)),
-                    TextInput::make('gemini_api_key')
-                        ->label('Gemini API key')
-                        ->password()
-                        ->revealable()
-                        ->visible(fn (): bool => in_array($this->data['ai_provider'] ?? '', ['gemini', 'google'], true))
-                        ->helperText(fn (): string => ($this->data['gemini_api_key_set'] ?? false)
-                            ? 'Leave blank to keep the current key.'
-                            : 'Get a key from Google AI Studio (aistudio.google.com)')
-                        ->dehydrated(fn ($state) => filled($state)),
-                    TextInput::make('ai_model')
-                        ->label('Model')
+                    Select::make('ai_model')
+                        ->label('ChatGPT model')
+                        ->options([
+                            'gpt-4o-mini' => 'gpt-4o-mini (fast / cheaper — recommended)',
+                            'gpt-4o' => 'gpt-4o (higher quality)',
+                            'gpt-4.1-mini' => 'gpt-4.1-mini',
+                            'gpt-4.1' => 'gpt-4.1',
+                            'o4-mini' => 'o4-mini',
+                        ])
+                        ->searchable()
                         ->required()
-                        ->placeholder(fn (): string => ($this->data['ai_provider'] ?? 'openai') === 'openai'
-                            ? 'gpt-4o-mini'
-                            : 'gemini-2.0-flash')
-                        ->helperText('Examples: gpt-4o-mini, gpt-4o, gemini-2.0-flash'),
+                        ->helperText('Or type a custom OpenAI model name below if needed.'),
+                    TextInput::make('ai_model_custom')
+                        ->label('Custom model (optional)')
+                        ->placeholder('e.g. gpt-4o-mini')
+                        ->helperText('If filled, this overrides the dropdown.')
+                        ->dehydrated(false),
                 ])
                 ->columns(2),
             Section::make('Generation limits')
@@ -125,12 +116,8 @@ class ManageAiSettings extends Page
                     TextInput::make('ai_base_url')
                         ->label('OpenAI base URL')
                         ->url()
-                        ->visible(fn (): bool => ($this->data['ai_provider'] ?? 'openai') === 'openai')
+                        ->required()
                         ->helperText('Default: https://api.openai.com/v1'),
-                    TextInput::make('ai_gemini_base_url')
-                        ->label('Gemini base URL')
-                        ->url()
-                        ->visible(fn (): bool => in_array($this->data['ai_provider'] ?? '', ['gemini', 'google'], true)),
                 ])
                 ->columns(2),
             Section::make('Status')
@@ -141,13 +128,11 @@ class ManageAiSettings extends Page
                             AiSettings::apply();
                             $configured = AiSettings::isConfigured();
                             $s = AiSettings::all();
-                            $provider = $s['ai_provider'] ?? 'openai';
-                            $model = $s['ai_model'] ?? '—';
-                            $keyOk = $configured ? 'API key set' : 'API key missing';
+                            $model = $s['ai_model'] ?? 'gpt-4o-mini';
 
                             return $configured
-                                ? "Ready — {$provider} / {$model} ({$keyOk})"
-                                : "Not ready — enable AI and save a ChatGPT or Gemini API key ({$keyOk}).";
+                                ? "Ready — ChatGPT / {$model}"
+                                : 'Not ready — enable ChatGPT and paste your OpenAI API key, then Save.';
                         }),
                 ]),
         ]);
@@ -155,10 +140,19 @@ class ManageAiSettings extends Page
 
     public function save(): void
     {
-        AiSettings::save($this->form->getState());
+        $state = $this->form->getState();
+        $custom = trim((string) ($this->data['ai_model_custom'] ?? ''));
+        if ($custom !== '') {
+            $state['ai_model'] = $custom;
+        }
+
+        // Always ChatGPT / OpenAI — never Gemini
+        $state['ai_provider'] = 'openai';
+
+        AiSettings::save($state);
 
         Notification::make()
-            ->title('AI settings saved')
+            ->title('ChatGPT settings saved')
             ->success()
             ->send();
 
@@ -169,7 +163,7 @@ class ManageAiSettings extends Page
     {
         return [
             Action::make('save')
-                ->label('Save AI settings')
+                ->label('Save ChatGPT settings')
                 ->submit('save')
                 ->keyBindings(['mod+s']),
         ];
@@ -196,6 +190,6 @@ class ManageAiSettings extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return static::$title ?? 'AI & ChatGPT Tokens';
+        return static::$title ?? 'ChatGPT (OpenAI)';
     }
 }

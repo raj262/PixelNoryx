@@ -120,7 +120,7 @@ class AiService
 
     protected function usesGemini(): bool
     {
-        return in_array(config('ai.provider'), ['gemini', 'google'], true);
+        return false;
     }
 
     /**
@@ -132,14 +132,8 @@ class AiService
 
         if (! $this->isConfigured()) {
             throw new RuntimeException(
-                $this->usesGemini()
-                    ? 'AI is not configured. Add a Gemini API key in Admin → Settings → AI / ChatGPT.'
-                    : 'AI is not configured. Add your ChatGPT (OpenAI) API key in Admin → Settings → AI / ChatGPT.'
+                'ChatGPT is not configured. Add your OpenAI API key in Admin → Settings → AI / ChatGPT.'
             );
-        }
-
-        if ($this->usesGemini()) {
-            return $this->gemini->complete($messages, $json, $maxTokens);
         }
 
         return $this->openAi->complete($messages, $maxTokens);

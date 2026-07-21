@@ -125,10 +125,15 @@ class ManageAutoBlog extends Page
                 ->columns(2),
             Section::make('Recent runs')
                 ->schema([
-                    Placeholder::make('runs_info')
+                        Placeholder::make('runs_info')
                         ->label('')
                         ->content(function (): string {
-                            $runs = AutoBlogRun::query()->latest()->limit(8)->get();
+                            try {
+                                $runs = AutoBlogRun::query()->latest()->limit(8)->get();
+                            } catch (\Throwable) {
+                                return 'Run migration first: php artisan migrate (tables auto_blog_runs / keyword_pool missing).';
+                            }
+
                             if ($runs->isEmpty()) {
                                 return 'No runs yet. Add keywords, enable the scheduler, or click “Generate now”.';
                             }
