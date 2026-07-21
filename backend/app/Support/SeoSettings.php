@@ -39,7 +39,7 @@ class SeoSettings
             'seo_og_image' => '',
             'seo_twitter_handle' => '',
             'seo_robots' => 'index, follow',
-            'seo_google_site_verification' => '',
+            'seo_google_site_verification' => 'GX6_Nac8vltJ3Q-SCQntnHtu2XeEnvmuKX6dIC5eUBE',
             'seo_bing_site_verification' => '',
         ];
     }
@@ -51,6 +51,14 @@ class SeoSettings
             $data[$key] = SiteSetting::get($key, $default);
         }
 
+        $data['seo_google_site_verification'] = self::normalizeGoogleVerification(
+            (string) ($data['seo_google_site_verification'] ?? '')
+        );
+
+        if ($data['seo_google_site_verification'] === '') {
+            $data['seo_google_site_verification'] = self::defaults()['seo_google_site_verification'];
+        }
+
         return $data;
     }
 
@@ -58,9 +66,24 @@ class SeoSettings
     {
         foreach (self::KEYS as $key) {
             if (array_key_exists($key, $data)) {
-                SiteSetting::set($key, $data[$key] ?? '');
+                $value = $data[$key] ?? '';
+                if ($key === 'seo_google_site_verification') {
+                    $value = self::normalizeGoogleVerification((string) $value);
+                }
+                SiteSetting::set($key, $value);
             }
         }
+    }
+
+    /** Accept either token only or full "google-site-verification=TOKEN". */
+    public static function normalizeGoogleVerification(string $value): string
+    {
+        $value = trim($value);
+        if (str_starts_with($value, 'google-site-verification=')) {
+            return trim(substr($value, strlen('google-site-verification=')));
+        }
+
+        return $value;
     }
 
     public static function toApiPayload(): array

@@ -9,7 +9,7 @@ const fallbackSeo: SeoPayload = {
   defaultKeywords: ["tech magazine", "developer blog", "newsletter", "react", "laravel"],
   titleTemplate: "%s | PixelNoryx",
   robots: "index, follow",
-  verification: { google: null, bing: null },
+  verification: { google: "GX6_Nac8vltJ3Q-SCQntnHtu2XeEnvmuKX6dIC5eUBE", bing: null },
   home: {
     title: `PixelNoryx | ${siteConfig.tagline}`,
     description: siteConfig.description,
