@@ -3,6 +3,112 @@
  * Keeps public pages AdSense-ready even if admin content is short.
  */
 export const articleBodies: Record<string, string> = {
+  "laravel-queues-production-guide": `
+<h2>Why localhost lies about queues</h2>
+<p>On a laptop, <code>php artisan queue:work</code> feels fine. In production, workers crash, jobs pile up, emails send twice, and timeouts kill half-finished imports. Reliability comes from explicit policies — not hoping Redis stays happy.</p>
+<p>This guide covers retry budgets, timeouts, failed-job handling, and a shipping checklist for Laravel apps that depend on background work.</p>
+
+<h2>Pick a driver with eyes open</h2>
+<ul>
+<li><strong>Database</strong> — fine for low volume; easy to inspect; can contend with app traffic.</li>
+<li><strong>Redis</strong> — default for most production apps; fast and battle-tested.</li>
+<li><strong>SQS / cloud queues</strong> — great when you want managed scaling and multi-server delivery.</li>
+</ul>
+<p>Whatever you choose, treat the queue as part of your disaster recovery story. Backups that ignore job payloads leave you half-restored.</p>
+
+<h2>Retries need a budget</h2>
+<p>Unlimited retries turn a poison message into an infinite CPU bill. Prefer a small, intentional budget:</p>
+<pre><code>public $tries = 5;
+public $backoff = [10, 30, 60, 120];
+</code></pre>
+<p>Use exponential backoff for third-party APIs. For user-facing mail, fail faster and surface the error in an admin UI rather than retrying overnight.</p>
+<p>Distinguish <em>transient</em> failures (rate limits, blips) from <em>permanent</em> ones (invalid payload). Permanent failures should fail the job immediately without burning retries.</p>
+
+<h2>Timeouts: match the work</h2>
+<p>A 60-second worker timeout on a 3-minute PDF export guarantees zombies. Set job-level timeouts consciously:</p>
+<ul>
+<li>Short API fan-out jobs: 30–60s</li>
+<li>Report generation: minutes, on a dedicated queue</li>
+<li>Never share one worker pool for “instant mail” and “heavy ETL”</li>
+</ul>
+<p>If you use Horizon, give heavy queues fewer processes and higher timeouts. Keep the default queue snappy for UX-critical work.</p>
+
+<h2>Idempotency beats cleverness</h2>
+<p>Jobs can run more than once. Design them that way. Use idempotency keys for payment side effects, “already sent” flags for receipts, and upserts instead of blind inserts. At-least-once delivery is normal; exactly-once is a myth you should not bet the ledger on.</p>
+
+<h2>Failed jobs are a product feature</h2>
+<p>Enable the failed jobs table and actually look at it. Alert when failed count spikes. Provide an admin action to retry after a fix. Deleting failed rows without reading them is how you hide production bugs.</p>
+<pre><code>php artisan queue:failed
+php artisan queue:retry {id}
+</code></pre>
+
+<h2>Supervision and deploys</h2>
+<p>Run workers under Supervisor or systemd. On deploy, restart workers gracefully so old code does not process new job payloads. Horizon’s terminate command exists for this reason.</p>
+<p>Health-check queue lag: if waiting jobs climb while workers are “up,” you are already late.</p>
+
+<h2>Production checklist</h2>
+<ol>
+<li>Separate queues by urgency and cost.</li>
+<li>Document tries/backoff/timeout per job class.</li>
+<li>Monitor lag, failure rate, and processing time.</li>
+<li>Make jobs idempotent.</li>
+<li>Test poison messages in staging.</li>
+<li>Restart workers on every release.</li>
+</ol>
+<p>Laravel queues are simple to start and easy to run poorly. Treat retries and timeouts as product decisions — your users only see the outcome.</p>
+`,
+
+  "saas-pricing-page-that-converts": `
+<h2>Pricing is a clarity problem</h2>
+<p>Buyers do not bounce because they hate paying. They bounce because they cannot tell which plan fits, what happens at the limit, or what the CTA commits them to. A converting pricing page answers those questions above the fold.</p>
+
+<h2>Start with packaging, not colors</h2>
+<p>Most products need three plans:</p>
+<ul>
+<li><strong>Starter</strong> — solo / trial-friendly</li>
+<li><strong>Growth</strong> — the plan you want most buyers on</li>
+<li><strong>Scale</strong> — teams, SSO, higher limits, human support</li>
+</ul>
+<p>If every plan includes everything, you do not have packaging — you have a discount ladder. Differentiate with limits and workflow unlocks, not vanity feature checkmarks.</p>
+
+<h2>Name plans for the buyer’s job</h2>
+<p>“Pro” and “Premium” are empty. Prefer names tied to outcomes or company size when it helps scanning. Still keep the visual hierarchy obvious: recommended plan gets the strongest border and CTA.</p>
+
+<h2>Limits must be specific</h2>
+<p>Vague copy like “unlimited-ish” destroys trust. State seats, projects, API calls, storage, and support channel. Explain overage behavior: hard block, soft warn, or auto-upgrade. Surprises after signup create chargebacks.</p>
+
+<h2>Annual toggle without tricks</h2>
+<p>Default to the period your business prefers, but show monthly equivalent clearly. Do not hide the monthly price behind a puzzle. Savings badges help when the math is honest.</p>
+
+<h2>CTA patterns that reduce friction</h2>
+<ul>
+<li>Primary CTA: “Start Free Trial” or “Get Started” — one verb.</li>
+<li>Secondary: “Talk to sales” only on the top tier.</li>
+<li>Avoid five competing buttons per card.</li>
+</ul>
+<p>If trial needs a card, say so near the button. Card-required trials convert differently than no-card trials — pick deliberately and write truthfully.</p>
+
+<h2>Social proof next to money</h2>
+<p>Place a short testimonial, logo row, or “used by X teams” near the pricing grid. Trust belongs beside the ask. Keep claims verifiable.</p>
+
+<h2>FAQ belongs on the page</h2>
+<p>Answer refunds, cancellation, data export, and “can I change plans later?” on the same URL. Sending people to a separate help center mid-decision leaks conversion.</p>
+
+<h2>Instrumentation</h2>
+<p>Track: pricing view → plan select → signup start → signup complete → paid. If plan select is high and signup is low, the checkout is the leak. If pricing view is high and select is low, packaging/copy is the leak.</p>
+
+<h2>Ship checklist</h2>
+<ol>
+<li>Three clear tiers with one recommended plan.</li>
+<li>Numeric limits and overage rules.</li>
+<li>Honest annual savings math.</li>
+<li>One primary CTA per plan.</li>
+<li>On-page FAQ for money objections.</li>
+<li>Events wired before the redesign “feels done.”</li>
+</ol>
+<p>A pricing page that converts is mostly honest structure. Design polish helps — ambiguity kills.</p>
+`,
+
   "multi-vendor-marketplace-playbook": `
 <h2>Why multi-vendor is hard</h2>
 <p>A single-store shop has one inventory owner, one price list, and one payout account. A marketplace has many vendors, shared catalog rules, commission math, and dispute flows. If you model it like a normal ecommerce app, you will rewrite the schema within months.</p>

@@ -28,24 +28,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!issue) return { title: "Not Found" };
 
   const siteUrl = seo?.siteUrl ?? "http://localhost:3000";
+  const title = issue.metaTitle?.trim() || issue.title;
+  const description = issue.metaDescription?.trim() || issue.excerpt;
+  const keywords =
+    issue.metaKeywords?.length ? issue.metaKeywords : issue.tags ?? [];
 
   return buildPostMetadata(
     seo,
     {
-      title: issue.title,
-      description: issue.excerpt,
-      keywords: issue.tags ?? [],
+      title,
+      description,
+      keywords,
       canonical: `${siteUrl}/archive/${slug}`,
       robots: seo?.robots ?? "index, follow",
       openGraph: {
-        title: issue.title,
-        description: issue.excerpt,
+        title,
+        description,
         image: issue.image,
         url: `${siteUrl}/archive/${slug}`,
         type: "article",
       },
     },
-    { title: issue.title, description: issue.excerpt, image: issue.image }
+    { title, description, image: issue.image }
   );
 }
 
@@ -59,9 +63,32 @@ export default async function IssuePage({ params }: PageProps) {
   const seo = await fetchSeo();
   const siteUrl = seo?.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const postUrl = `${siteUrl.replace(/\/$/, "")}/archive/${slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: issue.metaTitle || issue.title,
+    description: issue.metaDescription || issue.excerpt,
+    image: [issue.image],
+    datePublished: issue.date,
+    author: {
+      "@type": "Person",
+      name: issue.author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "PixelNoryx",
+      url: siteUrl.replace(/\/$/, ""),
+    },
+    mainEntityOfPage: postUrl,
+    keywords: (issue.metaKeywords?.length ? issue.metaKeywords : issue.tags).join(", "),
+  };
 
   return (
     <div className="py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="magazine-container">
         <div className="flex flex-col gap-10 lg:flex-row">
           <article className="min-w-0 flex-1">

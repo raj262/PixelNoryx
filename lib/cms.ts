@@ -43,6 +43,13 @@ async function apiGet<T>(path: string): Promise<T | null> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapPost(raw: any): NewsletterIssue {
+  const seo = raw.seo ?? {};
+  const keywords = Array.isArray(seo.keywords)
+    ? seo.keywords
+    : typeof raw.meta_keywords === "string"
+      ? raw.meta_keywords.split(",").map((k: string) => k.trim()).filter(Boolean)
+      : undefined;
+
   return enrichPostContent({
     id: raw.id,
     issueNumber: raw.issueNumber ?? raw.issue_number,
@@ -62,7 +69,29 @@ function mapPost(raw: any): NewsletterIssue {
     free: raw.free !== false,
     sponsored: Boolean(raw.sponsored ?? raw.is_sponsored),
     commentCount: raw.commentCount ?? raw.comment_count ?? 0,
+    metaTitle: raw.metaTitle ?? raw.meta_title ?? seo.title,
+    metaDescription: raw.metaDescription ?? raw.meta_description ?? seo.description,
+    metaKeywords: raw.metaKeywords ?? keywords,
   });
+}
+
+/** Ensure local published articles appear even when CMS API is missing them. */
+export function mergeLocalPosts(apiPosts: NewsletterIssue[]): NewsletterIssue[] {
+  const bySlug = new Map<string, NewsletterIssue>();
+
+  for (const post of apiPosts) {
+    bySlug.set(post.slug, post);
+  }
+
+  for (const local of fallbackPosts) {
+    if (!bySlug.has(local.slug)) {
+      bySlug.set(local.slug, enrichPostContent({ ...local }));
+    }
+  }
+
+  return Array.from(bySlug.values()).sort(
+    (a, b) => (b.issueNumber ?? 0) - (a.issueNumber ?? 0)
+  );
 }
 
 function mapAds(raw?: Record<string, AdPlacement>): Record<string, AdPlacement> {
@@ -109,7 +138,7 @@ export function buildFallbackBootstrap(): SiteBootstrap {
       href: `/archive?topic=${encodeURIComponent(name)}`,
     })),
     topics: [...fallbackTopics],
-    posts: fallbackPosts.map((post) => enrichPostContent({ ...post })),
+    posts: mergeLocalPosts(fallbackPosts.map((post) => enrichPostContent({ ...post }))),
     faqs: [...fallbackFaqs],
     testimonials: [...fallbackTestimonials],
     ads: mapAds(undefined),
@@ -139,7 +168,7 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
 
   return {
     ...data,
-    posts: (data.posts ?? []).map(mapPost),
+    posts: mergeLocalPosts((data.posts ?? []).map(mapPost)),
     settings: {
       ...data.settings,
       author: {

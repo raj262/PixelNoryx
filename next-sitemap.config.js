@@ -20,6 +20,27 @@ module.exports = {
       { loc: "/archive", changefreq: "daily", priority: 0.8 },
     ];
 
+    const localArticleSlugs = [
+      "laravel-queues-production-guide",
+      "saas-pricing-page-that-converts",
+      "multi-vendor-marketplace-playbook",
+      "react-laravel-stack-2025",
+      "dark-ui-that-converts",
+      "nextjs-15-cheat-sheet",
+      "api-auth-without-tears",
+      "saas-launch-30-day-plan",
+      "indie-hacker-revenue-stack",
+      "tailwind-at-scale",
+    ];
+
+    for (const slug of localArticleSlugs) {
+      paths.push({
+        loc: `/archive/${slug}`,
+        changefreq: "weekly",
+        priority: 0.8,
+      });
+    }
+
     const apiBase = (
       process.env.NEXT_PUBLIC_API_URL || "https://admin.rajeshcodes.in/api/v1"
     ).replace(/\/$/, "");
@@ -31,9 +52,11 @@ module.exports = {
 
       if (postsRes.ok) {
         const { data: posts } = await postsRes.json();
+        const seen = new Set(localArticleSlugs);
 
         for (const post of posts ?? []) {
-          if (!post?.slug) continue;
+          if (!post?.slug || seen.has(post.slug)) continue;
+          seen.add(post.slug);
 
           paths.push({
             loc: `/archive/${post.slug}`,

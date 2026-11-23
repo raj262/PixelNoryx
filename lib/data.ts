@@ -72,6 +72,72 @@ export const subscribeBenefits = [
 
 export const newsletterIssues: NewsletterIssue[] = [
   {
+    id: 10,
+    issueNumber: 44,
+    slug: "laravel-queues-production-guide",
+    title: "Laravel Queues in Production: Retries, Timeouts, and Failed Jobs",
+    excerpt:
+      "A practical guide to queue workers, retry budgets, timeout tuning, and dead-letter handling so background jobs stay reliable under real traffic.",
+    preview:
+      "Your jobs work on localhost. Production is where retries, timeouts, and failed-job tables decide whether customers get emails — or silence.",
+    content:
+      "Learn how to run Laravel queues in production with clear retry policies, sensible timeouts, monitoring, and failed job recovery.",
+    image:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80",
+    topic: "Laravel",
+    author: "Rajesh Verma",
+    authorRole: "Founder, PixelNoryx",
+    date: "Nov 18, 2026",
+    readTime: "9 min read",
+    tags: ["Laravel", "Queues", "DevOps", "PHP"],
+    featured: true,
+    free: true,
+    commentCount: 0,
+    metaTitle: "Laravel Queues in Production: Retries, Timeouts & Failed Jobs",
+    metaDescription:
+      "Ship reliable Laravel queue workers: retry budgets, timeout settings, failed jobs, Horizon tips, and a production checklist for background processing.",
+    metaKeywords: [
+      "Laravel queues",
+      "Laravel failed jobs",
+      "queue workers production",
+      "Laravel Horizon",
+      "PHP background jobs",
+    ],
+  },
+  {
+    id: 9,
+    issueNumber: 43,
+    slug: "saas-pricing-page-that-converts",
+    title: "SaaS Pricing Pages That Convert: Structure, Copy, and Plan Limits",
+    excerpt:
+      "How to design a pricing page that answers objections fast — plan names, limit clarity, annual toggles, and CTAs that do not confuse buyers.",
+    preview:
+      "Most pricing pages fail because limits are vague and every plan looks the same. Here is a structure that converts without dark patterns.",
+    content:
+      "A conversion-focused SaaS pricing layout: packaging, copy formulas, limit tables, and trust signals that reduce sales calls.",
+    image:
+      "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1200&q=80",
+    topic: "SaaS",
+    author: "Rajesh Verma",
+    authorRole: "Founder, PixelNoryx",
+    date: "Nov 11, 2026",
+    readTime: "9 min read",
+    tags: ["SaaS", "Pricing", "Conversion", "Startup"],
+    featured: true,
+    free: true,
+    commentCount: 0,
+    metaTitle: "SaaS Pricing Page That Converts: Layout, Copy & Plan Limits",
+    metaDescription:
+      "Build a SaaS pricing page that converts: clear plan tiers, honest limits, annual toggle UX, FAQ placement, and CTA patterns that reduce bounce.",
+    metaKeywords: [
+      "SaaS pricing page",
+      "pricing page conversion",
+      "SaaS plan limits",
+      "startup pricing",
+      "pricing page UX",
+    ],
+  },
+  {
     id: 1,
     issueNumber: 42,
     slug: "multi-vendor-marketplace-playbook",

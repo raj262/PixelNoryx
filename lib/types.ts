@@ -27,6 +27,10 @@ export interface NewsletterIssue {
   free?: boolean;
   commentCount?: number;
   sponsored?: boolean;
+  /** Optional SEO overrides (used when CMS meta fields are empty). */
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
 }
 
 /** @deprecated Use NewsletterIssue — kept for gradual migration */
