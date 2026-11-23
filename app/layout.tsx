@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Outfit, Source_Serif_4, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import TopBar from "@/components/layout/TopBar";
@@ -55,17 +54,16 @@ export default async function RootLayout({
       className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
     >
       <head>
+        {/* Exact AdSense snippet Google expects for site verification */}
+        {ADSENSE_CLIENT_ID ? (
+          <script
+            async
+            src={ADSENSE_SCRIPT_SRC}
+            crossOrigin="anonymous"
+          />
+        ) : null}
         <ThirdPartyHead />
       </head>
-      {ADSENSE_CLIENT_ID ? (
-        <Script
-          id="adsense-init"
-          async
-          src={ADSENSE_SCRIPT_SRC}
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
-      ) : null}
       <body className="font-sans antialiased" suppressHydrationWarning>
         <SiteDataProvider data={siteData}>
           <AppProviders>
