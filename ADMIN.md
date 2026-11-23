@@ -1,6 +1,6 @@
 # PixelNoryx Admin (Next.js)
 
-Role-based CMS inside the Next.js app at **`/admin`** — no Laravel `backend/` folder required.
+Role-based CMS inside the Next.js app at **`/admin`** (Neon Postgres).
 
 ## Roles
 

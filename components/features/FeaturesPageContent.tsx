@@ -348,8 +348,8 @@ export default function FeaturesPageContent() {
               <p className="section-subtitle">Platform</p>
               <h2 className="section-title mt-2">Powered by a real CMS</h2>
               <p className="mt-4 text-muted leading-relaxed">
-                PixelNoryx pairs a Next.js magazine frontend with a Filament admin
-                backend — posts, ads, SEO, mail, AI chat, and subscribers in one place.
+                PixelNoryx pairs a Next.js magazine frontend with a built-in
+                /admin CMS on Neon — posts, SEO, users, and media in one place.
               </p>
               <Link
                 href="/archive"

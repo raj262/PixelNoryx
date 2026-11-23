@@ -72,7 +72,7 @@ export const editorHighlights: PlatformFeature[] = [
   {
     icon: "Layers",
     title: "Admin CMS",
-    description: "Posts, categories, ads, SEO, mail, and AI — all managed from one Laravel admin.",
+    description: "Posts, SEO, and users — managed from the Next.js /admin panel on Neon.",
   },
   {
     icon: "TrendingUp",

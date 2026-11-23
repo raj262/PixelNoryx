@@ -1,18 +1,19 @@
 # PixelNoryx
 
-Magazine-style developer newsletter (Next.js) + Laravel admin API.
+Magazine-style developer newsletter — **Next.js** app with built-in **`/admin`** CMS on **Neon Postgres**.
 
 ## Project structure
 
 ```
 PixelNoryx/
-├── app/                 # Next.js frontend (public site)
+├── app/                 # Public site + /admin
 ├── components/
 ├── lib/
-└── backend/             # Laravel API + Filament admin (separate folder)
+├── prisma/              # Neon Postgres schema
+└── neon.ts              # Neon services (Postgres + Object Storage)
 ```
 
-See **[backend/README.md](backend/README.md)** for admin setup, roles, and API docs.
+See **[ADMIN.md](ADMIN.md)** for admin setup and **[VERCEL.md](VERCEL.md)** for deploy env vars.
 
 ## What it is
 
@@ -20,33 +21,22 @@ See **[backend/README.md](backend/README.md)** for admin setup, roles, and API d
 
 ## Features
 
-- **Subscribe-first hero** — Email signup with social proof
-- **Latest issue** — Featured edition with preview quote
-- **Archive** — Grid/list views, topic filters (`/archive`)
-- **Issue pages** — Newsletter-style reading experience (`/archive/[slug]`)
-- **Search** — `Cmd/Ctrl + K` across all issues
-- **About author** — Bio + inline subscribe
-- **Testimonials, FAQ, Contact**
+- Subscribe-first hero, archive, search, about/contact
+- Role-based admin at `/admin` (posts + SEO + users)
+- Neon Postgres + optional Object Storage
 
 ## Run
 
 ```bash
+cp .env.example .env
 npm install
+npm run db:setup
 npm run dev
 ```
 
-- Home: http://localhost:3000
-- Archive: http://localhost:3000/archive
-
-Old `/blog` URLs redirect to `/archive`.
-
-## Customize
-
-| Item | File |
-|------|------|
-| Site copy & issues | `lib/data.ts` |
-| Subscribe (connect API) | `components/newsletter/SubscribeForm.tsx` |
-| Colors | `tailwind.config.ts` |
+- Site: http://localhost:3000
+- Admin: http://localhost:3000/admin  
+  (`admin@pixelnoryx.com` / `admin123`)
 
 ## Build
 
