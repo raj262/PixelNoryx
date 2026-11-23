@@ -32,15 +32,36 @@ export default function AdminLoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const json = (await res.json()) as { message?: string };
-      if (!res.ok) {
-        setError(json.message ?? "Login failed");
+
+      const contentType = res.headers.get("content-type") ?? "";
+      const raw = await res.text();
+      let json: { message?: string } = {};
+      if (contentType.includes("application/json") && raw) {
+        try {
+          json = JSON.parse(raw) as { message?: string };
+        } catch {
+          json = {};
+        }
+      }
+
+      if (res.status === 404) {
+        setError(
+          "Admin API not found (404). Deploy the latest build on Vercel and set DATABASE_URL + ADMIN_SESSION_SECRET."
+        );
         return;
       }
+
+      if (!res.ok) {
+        setError(json.message ?? `Login failed (${res.status}).`);
+        return;
+      }
+
       router.replace("/admin");
       router.refresh();
     } catch {
-      setError("Network error");
+      setError(
+        "Cannot reach server. Start the app with npm run dev, or check your connection."
+      );
     } finally {
       setLoading(false);
     }
