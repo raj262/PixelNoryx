@@ -69,7 +69,7 @@ export default function FAQ() {
                       We&apos;re happy to help — reach out anytime.
                     </p>
                     <Link
-                      href="/#contact"
+                      href="/contact"
                       className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
                     >
                       Contact us →

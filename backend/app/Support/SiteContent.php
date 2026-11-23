@@ -47,14 +47,14 @@ class SiteContent
                 ['label' => 'Home', 'href' => '/', 'hasDropdown' => false],
                 ['label' => 'Features', 'href' => '/features', 'hasDropdown' => false],
                 ['label' => 'Categories', 'href' => '/archive', 'hasDropdown' => true],
-                ['label' => 'About', 'href' => '/#about', 'hasDropdown' => false],
-                ['label' => 'Contact', 'href' => '/#contact', 'hasDropdown' => false],
+                ['label' => 'About', 'href' => '/about', 'hasDropdown' => false],
+                ['label' => 'Contact', 'href' => '/contact', 'hasDropdown' => false],
             ],
             'footer_links' => [
                 'newsletter' => [
                     ['label' => 'Archive', 'href' => '/archive'],
                     ['label' => 'Subscribe', 'href' => '/#subscribe'],
-                    ['label' => 'About', 'href' => '/#about'],
+                    ['label' => 'About', 'href' => '/about'],
                 ],
                 'topics' => [
                     ['label' => 'React.js', 'href' => '/archive?topic=React.js'],
@@ -66,7 +66,7 @@ class SiteContent
                     ['label' => 'Privacy Policy', 'href' => '/privacy-policy'],
                     ['label' => 'Disclaimer', 'href' => '/disclaimer'],
                     ['label' => 'Terms & Conditions', 'href' => '/terms-and-conditions'],
-                    ['label' => 'Contact', 'href' => '/#contact'],
+                    ['label' => 'Contact', 'href' => '/contact'],
                 ],
             ],
             'subscribe_benefits' => [

@@ -254,7 +254,7 @@ HTML,
             ['label' => 'Privacy Policy', 'href' => '/privacy-policy'],
             ['label' => 'Disclaimer', 'href' => '/disclaimer'],
             ['label' => 'Terms & Conditions', 'href' => '/terms-and-conditions'],
-            ['label' => 'Contact', 'href' => '/#contact'],
+            ['label' => 'Contact', 'href' => '/contact'],
         ];
 
         SiteSetting::setJson('footer_links', $footerLinks);

@@ -126,7 +126,7 @@ export default function AboutSection() {
                     Browse the archive →
                   </Link>
                   <Link
-                    href="/#contact"
+                    href="/contact"
                     className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-foreground"
                   >
                     <Mail className="h-4 w-4 shrink-0" />

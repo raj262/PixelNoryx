@@ -27,8 +27,8 @@ export const navLinks = [
   { label: "Home", href: "/" },
   { label: "Features", href: "/features" },
   { label: "Categories", href: "/archive", hasDropdown: true },
-  { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const newsletterTopics: NewsletterTopic[] = [
@@ -330,7 +330,7 @@ export const footerLinks = {
     { label: "Archive", href: "/archive" },
     { label: "Latest Issue", href: "/archive/multi-vendor-marketplace-playbook" },
     { label: "Subscribe", href: "/#subscribe" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
   ],
   topics: [
     { label: "React.js", href: "/archive?topic=React.js" },
@@ -342,7 +342,7 @@ export const footerLinks = {
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Disclaimer", href: "/disclaimer" },
     { label: "Terms & Conditions", href: "/terms-and-conditions" },
-    { label: "Contact", href: "/#contact" },
+    { label: "Contact", href: "/contact" },
   ],
 };
 

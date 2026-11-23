@@ -86,7 +86,7 @@ export const adPlacements: Record<string, AdPlacement> = {
     title: "Your Ad Could Be Here",
     subtitle: "Reach developers & indie hackers · Contact us",
     cta: "Advertise",
-    href: "/#contact",
+    href: "/contact",
     sponsor: "Advertisement",
     gradient: "zinc",
   },

@@ -13,7 +13,12 @@ module.exports = {
     ],
   },
   additionalPaths: async () => {
-    const paths = [{ loc: "/features", changefreq: "monthly", priority: 0.7 }];
+    const paths = [
+      { loc: "/features", changefreq: "monthly", priority: 0.7 },
+      { loc: "/about", changefreq: "monthly", priority: 0.7 },
+      { loc: "/contact", changefreq: "monthly", priority: 0.7 },
+      { loc: "/archive", changefreq: "daily", priority: 0.8 },
+    ];
 
     const apiBase = (
       process.env.NEXT_PUBLIC_API_URL || "https://admin.rajeshcodes.in/api/v1"

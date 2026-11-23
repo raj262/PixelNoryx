@@ -1,10 +1,11 @@
+import { enrichPostContent } from "@/lib/article-bodies";
 import { clientApiFetch } from "@/lib/api-fetch";
 import { normalizeMediaUrl } from "@/lib/media";
 import type { NewsletterIssue } from "@/lib/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapPost(raw: any): NewsletterIssue {
-  return {
+  return enrichPostContent({
     id: raw.id,
     issueNumber: raw.issueNumber ?? raw.issue_number,
     slug: raw.slug,
@@ -23,7 +24,7 @@ function mapPost(raw: any): NewsletterIssue {
     free: raw.free !== false,
     sponsored: Boolean(raw.sponsored ?? raw.is_sponsored),
     commentCount: raw.commentCount ?? raw.comment_count ?? 0,
-  };
+  });
 }
 
 /** Fresh published posts from the API (bypasses Next.js build cache). */

@@ -103,7 +103,7 @@ export default function Footer() {
                 );
               })}
               <li>
-                <Link href="/#contact" className="text-sm text-white/60 hover:text-primary">
+                <Link href="/contact" className="text-sm text-white/60 hover:text-primary">
                   Contact
                 </Link>
               </li>

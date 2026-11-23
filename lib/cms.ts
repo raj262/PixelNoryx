@@ -16,6 +16,7 @@ import {
   getIssueBySlug as fallbackGetIssueBySlug,
 } from "@/lib/data";
 import type { NewsletterIssue } from "@/lib/types";
+import { enrichPostContent } from "@/lib/article-bodies";
 
 import { apiUrl } from "@/lib/api-config";
 import { normalizeMediaUrl } from "@/lib/media";
@@ -42,7 +43,7 @@ async function apiGet<T>(path: string): Promise<T | null> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapPost(raw: any): NewsletterIssue {
-  return {
+  return enrichPostContent({
     id: raw.id,
     issueNumber: raw.issueNumber ?? raw.issue_number,
     slug: raw.slug,
@@ -61,7 +62,7 @@ function mapPost(raw: any): NewsletterIssue {
     free: raw.free !== false,
     sponsored: Boolean(raw.sponsored ?? raw.is_sponsored),
     commentCount: raw.commentCount ?? raw.comment_count ?? 0,
-  };
+  });
 }
 
 function mapAds(raw?: Record<string, AdPlacement>): Record<string, AdPlacement> {
@@ -108,7 +109,7 @@ export function buildFallbackBootstrap(): SiteBootstrap {
       href: `/archive?topic=${encodeURIComponent(name)}`,
     })),
     topics: [...fallbackTopics],
-    posts: [...fallbackPosts],
+    posts: fallbackPosts.map((post) => enrichPostContent({ ...post })),
     faqs: [...fallbackFaqs],
     testimonials: [...fallbackTestimonials],
     ads: mapAds(undefined),
@@ -166,7 +167,8 @@ export async function getBootstrap(): Promise<SiteBootstrap> {
 export async function getPostBySlug(slug: string): Promise<NewsletterIssue | null> {
   const raw = await apiGet<NewsletterIssue>(`/posts/${slug}`);
   if (raw) return mapPost(raw);
-  return fallbackGetIssueBySlug(slug) ?? null;
+  const fallback = fallbackGetIssueBySlug(slug);
+  return fallback ? enrichPostContent({ ...fallback }) : null;
 }
 
 export async function getAllPostSlugs(): Promise<string[]> {
