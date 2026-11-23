@@ -31,6 +31,30 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("[admin login]", error);
+    const raw = error instanceof Error ? error.message : String(error);
+    const dbUnreachable =
+      raw.includes("Can't reach database server") ||
+      raw.includes("P1001") ||
+      raw.includes("Timed out fetching") ||
+      raw.includes("Connection terminated");
+
+    if (dbUnreachable) {
+      return NextResponse.json(
+        {
+          message:
+            "Database unreachable (Neon cold start / wrong DATABASE_URL). Use the pooled Neon URL with &connect_timeout=15&pool_timeout=15, then Redeploy.",
+        },
+        { status: 503 }
+      );
+    }
+
+    if (raw.includes("ADMIN_SESSION_SECRET")) {
+      return NextResponse.json(
+        { message: "ADMIN_SESSION_SECRET is missing on Vercel." },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ message: "Login failed." }, { status: 500 });
   }
 }
