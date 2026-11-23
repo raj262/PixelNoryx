@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Neon Postgres — pooled URL for app, direct URL for migrations.
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  USER
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  posts        Post[]
+}
+
+model Post {
+  id              String     @id @default(cuid())
+  issueNumber     Int?
+  slug            String     @unique
+  title           String
+  excerpt         String     @default("")
+  preview         String     @default("")
+  content         String     @default("")
+  image           String     @default("")
+  topic           String     @default("Frontend")
+  tags            String     @default("[]") // JSON array as string (SQLite-friendly)
+  readTime        String     @default("5 min read")
+  status          PostStatus @default(DRAFT)
+  featured        Boolean    @default(false)
+  free            Boolean    @default(true)
+  sponsored       Boolean    @default(false)
+  commentCount    Int        @default(0)
+  publishedAt     DateTime?
+  // Per-post SEO
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String? // comma-separated
+  ogImage         String?
+  canonicalUrl    String?
+  robots          String     @default("index, follow")
+  authorId        String?
+  author          User?      @relation(fields: [authorId], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([topic])
+}
+
+model SeoSetting {
+  id                     Int      @id @default(1)
+  siteUrl                String   @default("https://www.pixelnoryx.com")
+  defaultTitle           String   @default("PixelNoryx | The Developer Dispatch")
+  defaultDescription     String   @default("A free weekly newsletter on React, Laravel, SaaS, and shipping digital products.")
+  defaultKeywords        String   @default("tech magazine, developer blog, newsletter, react, laravel")
+  titleTemplate          String   @default("%s | PixelNoryx")
+  homeTitle              String   @default("PixelNoryx | The Developer Dispatch")
+  homeDescription        String   @default("A free weekly newsletter on React, Laravel, SaaS, and shipping digital products.")
+  homeKeywords           String   @default("tech magazine, developer blog, newsletter, react, laravel")
+  ogImage                String   @default("")
+  twitterHandle          String   @default("")
+  robots                 String   @default("index, follow")
+  googleSiteVerification String   @default("")
+  bingSiteVerification   String   @default("")
+  updatedAt              DateTime @updatedAt
+}

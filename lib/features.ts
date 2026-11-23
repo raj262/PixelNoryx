@@ -5,38 +5,59 @@ export interface PlatformFeature {
   href?: string;
 }
 
-/** Site & reader experience features (static — newsletter benefits come from CMS). */
-export const platformFeatures: PlatformFeature[] = [
+export interface ReaderJourneyFeature extends PlatformFeature {
+  eyebrow: string;
+  cta?: string;
+  accent: "explore" | "search" | "share";
+  points: string[];
+}
+
+/** Hero trio for the Features “Explore, search, and share” section. */
+export const readerJourney: ReaderJourneyFeature[] = [
   {
+    eyebrow: "01 — Explore",
+    accent: "explore",
     icon: "BookOpen",
     title: "Topic Archive",
     description:
-      "Browse every issue by React, Laravel, Next.js, SaaS, UI/UX, and more — filter with one click.",
+      "Browse every issue by React, Laravel, SaaS, UI/UX, and more. Filter once — keep reading.",
     href: "/archive",
+    cta: "Open archive",
+    points: ["Topic filters", "Featured issues", "Reading time on every card"],
   },
+  {
+    eyebrow: "02 — Search",
+    accent: "search",
+    icon: "Search",
+    title: "Instant Search",
+    description:
+      "Jump to any post by title, topic, or keyword from the header. No menu digging.",
+    points: ["Cmd / Ctrl + K style speed", "Title + topic match", "Works on mobile"],
+  },
+  {
+    eyebrow: "03 — Share",
+    accent: "share",
+    icon: "Share2",
+    title: "One-Tap Sharing",
+    description:
+      "Share any article with native share, copy link, or social — built for phone and desktop.",
+    points: ["Native share sheet", "Copy link", "Social-ready titles"],
+  },
+];
+
+/** Supporting reader tools shown under the journey trio. */
+export const platformFeatures: PlatformFeature[] = [
   {
     icon: "Sparkles",
     title: "AI Assistant",
     description:
-      "Ask about articles, trending topics, and how to subscribe — like a shopping helper, but for dev content.",
-  },
-  {
-    icon: "Search",
-    title: "Instant Search",
-    description:
-      "Find posts by title, topic, or keyword from the header — no digging through menus.",
+      "Ask about articles, trending topics, and how to subscribe — a helper for busy readers.",
   },
   {
     icon: "MessageSquare",
     title: "Reader Comments",
     description:
-      "Discuss each article with signed-in readers. Share feedback and follow the conversation.",
-  },
-  {
-    icon: "Share2",
-    title: "One-Tap Sharing",
-    description:
-      "Share any post via native share, copy link, or social — built for mobile and desktop.",
+      "Discuss each article with signed-in readers. Share feedback and follow the thread.",
   },
   {
     icon: "ShieldCheck",

@@ -26,8 +26,8 @@ export default function HeroFeatured() {
           <h2 className="section-title mt-2">Top Stories</h2>
         </AnimateIn>
 
-        <AnimateIn delay={0.15} className="grid items-stretch gap-6 lg:grid-cols-3">
-          <PostCard post={hero} variant="hero" />
+        <AnimateIn delay={0.15} className="grid items-stretch gap-6 lg:grid-cols-3 lg:gap-7">
+          {hero ? <PostCard post={hero} variant="hero" /> : null}
           <LatestHeadlines posts={sidePosts} />
         </AnimateIn>
 

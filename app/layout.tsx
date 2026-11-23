@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Outfit, Source_Serif_4, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import TopBar from "@/components/layout/TopBar";
@@ -7,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import ClientShell from "@/components/layout/ClientShell";
 import AppProviders from "@/components/providers/AppProviders";
 import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
-import { getBootstrap, fetchSeo } from "@/lib/cms";
+import { getBootstrap, fetchSeo, buildFallbackBootstrap } from "@/lib/cms";
 import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_SRC } from "@/lib/adsense";
 import { buildSiteMetadata } from "@/lib/seo";
 import { ThirdPartyFoot, ThirdPartyHead } from "@/components/analytics/ThirdPartyScripts";
@@ -45,7 +46,24 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const siteData = await getBootstrap();
+  const headerStore = await headers();
+  const isAdmin = headerStore.get("x-pixelnoryx-admin") === "1";
+
+  if (isAdmin) {
+    return (
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
+      >
+        <body className="font-sans antialiased" suppressHydrationWarning>
+          {children}
+        </body>
+      </html>
+    );
+  }
+
+  const siteData = await getBootstrap().catch(() => buildFallbackBootstrap());
 
   return (
     <html
@@ -54,13 +72,8 @@ export default async function RootLayout({
       className={`scroll-smooth ${outfit.variable} ${spaceGrotesk.variable} ${sourceSerif.variable}`}
     >
       <head>
-        {/* Exact AdSense snippet Google expects for site verification */}
         {ADSENSE_CLIENT_ID ? (
-          <script
-            async
-            src={ADSENSE_SCRIPT_SRC}
-            crossOrigin="anonymous"
-          />
+          <script async src={ADSENSE_SCRIPT_SRC} crossOrigin="anonymous" />
         ) : null}
         <ThirdPartyHead />
       </head>

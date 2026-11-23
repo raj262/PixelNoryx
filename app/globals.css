@@ -99,4 +99,8 @@
   .btn-outline-modern {
     @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-foreground/10 bg-white px-8 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:border-primary hover:text-primary;
   }
+
+  .admin-input {
+    @apply w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm font-normal text-foreground outline-none transition-colors focus:border-primary focus:bg-white;
+  }
 }

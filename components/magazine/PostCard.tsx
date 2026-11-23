@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { NewsletterIssue } from "@/lib/types";
 import { normalizeMediaUrl } from "@/lib/media";
 import PostMeta from "./PostMeta";
@@ -23,38 +24,50 @@ export default function PostCard({
 
   if (variant === "hero") {
     return (
-      <article className="post-card group relative col-span-1 lg:col-span-2 lg:row-span-2">
-        <Link href={href} className="block">
-          <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[480px]">
+      <article className="post-card group relative flex h-full min-h-0 flex-col overflow-hidden lg:col-span-2">
+        <Link href={href} className="flex h-full min-h-0 flex-col">
+          <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-[2/1] lg:aspect-auto lg:min-h-[280px] lg:flex-1">
             <Image
               src={imageSrc}
               alt={post.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               priority
               sizes="(max-width: 1024px) 100vw, 66vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-              {post.sponsored && (
-                <span className="mb-2 inline-block bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+            <div className="absolute left-4 top-4 flex flex-wrap items-center gap-2 sm:left-5 sm:top-5">
+              {post.sponsored ? (
+                <span className="rounded-md bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
                   Sponsored
                 </span>
-              )}
-              <span className="category-badge mb-3 block text-white/90">
+              ) : null}
+              <span
+                className={`rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm backdrop-blur-sm ${getTopicColor(post.topic)}`}
+              >
                 {post.topic}
               </span>
-              <h2 className="font-display text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 border-t border-border/70 bg-white p-5 sm:gap-4 sm:p-6 lg:p-7">
+            <div>
+              <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-3xl lg:text-[2rem]">
                 {post.title}
               </h2>
-              {showExcerpt && (
-                <p className="mt-3 line-clamp-2 text-sm text-white/80 sm:text-base">
+              {showExcerpt ? (
+                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted sm:text-[15px]">
                   {post.excerpt}
                 </p>
-              )}
-              <div className="mt-4 text-xs">
-                <PostMeta post={post} showTopic={false} light />
-              </div>
+              ) : null}
+            </div>
+
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4">
+              <PostMeta post={post} showTopic={false} />
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
+                Read story
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </span>
             </div>
           </div>
         </Link>
