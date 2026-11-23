@@ -10,6 +10,7 @@ You **do not** upload `.env` to Git or Vercel. Set variables in the Vercel dashb
 |------|--------|----------|
 | `NEXT_PUBLIC_API_URL` | `https://admin.rajeshcodes.in/api/v1` | Yes |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.pixelnoryx.com` (no trailing slash) | Yes — used by `next-sitemap` for sitemap & robots.txt |
+| `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | `ca-pub-5868302798733822` | Optional (defaults in code; set if you change publisher) |
 | `NEXT_PUBLIC_GA_ID` | `G-15PBQ74TNC` | Optional (Google Analytics) |
 | `NEXT_PUBLIC_CLARITY_ID` | `wyzy74qijw` | Optional (Microsoft Clarity) |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | *(from `php artisan push:vapid-keys`)* | Optional (web push) |
