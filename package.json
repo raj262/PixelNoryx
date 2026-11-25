@@ -7,8 +7,8 @@
     "dev:clean": "rm -rf .next node_modules/.cache && next dev",
     "clean": "rm -rf .next node_modules/.cache",
     "build": "node scripts/prisma-generate.mjs && next build",
-    "postbuild": "next-sitemap",
     "start": "next start",
+
     "lint": "next lint",
     "db:generate": "node scripts/prisma-generate.mjs",
     "db:push": "prisma db push",
