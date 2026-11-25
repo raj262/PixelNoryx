@@ -1,50 +1,26 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { usePosts, useSiteData } from "@/components/providers/SiteDataProvider";
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
-import { fetchPublishedPosts } from "@/lib/posts";
-import type { NewsletterIssue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function ArchiveGrid() {
   const searchParams = useSearchParams();
-  const bootstrapPosts = usePosts();
+  const posts = usePosts();
   const { topics } = useSiteData();
   const topicParam = searchParams.get("topic");
 
   const activeTopic =
-    topicParam && topics.includes(topicParam) ? topicParam : undefined;
-
-  const [posts, setPosts] = useState<NewsletterIssue[]>(bootstrapPosts);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setLoading(true);
-      const live = await fetchPublishedPosts(activeTopic);
-      if (cancelled) return;
-      // Keep bootstrap posts if the live fetch is empty (dead API / cold DB).
-      setPosts(live.length > 0 ? live : bootstrapPosts);
-      setLoading(false);
-    }
-
-    void load();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [activeTopic, bootstrapPosts]);
+    topicParam && topics.some((t) => t.toLowerCase() === topicParam.toLowerCase())
+      ? topics.find((t) => t.toLowerCase() === topicParam.toLowerCase())
+      : undefined;
 
   const filtered = useMemo(() => {
-    if (!activeTopic) {
-      return posts;
-    }
+    if (!activeTopic) return posts;
     return posts.filter(
       (i) => i.topic.toLowerCase() === activeTopic.toLowerCase()
     );
@@ -80,32 +56,16 @@ function ArchiveGrid() {
         ))}
       </div>
 
-      {loading ? (
-        <div className="grid gap-8 sm:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-80 animate-pulse bg-surface" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-8 sm:grid-cols-2">
-          {filtered.map((post) => (
-            <PostCard key={post.slug} post={post} variant="standard" />
-          ))}
-        </div>
-      )}
+      <div className="grid gap-8 sm:grid-cols-2">
+        {filtered.map((post) => (
+          <PostCard key={post.slug} post={post} variant="standard" />
+        ))}
+      </div>
 
-      {!loading && filtered.length === 0 && (
+      {filtered.length === 0 && (
         <div className="rounded-lg border border-dashed border-border bg-surface/50 px-6 py-10 text-center text-sm text-muted">
           {activeTopic ? (
-            <>
-              <p>No published posts in “{activeTopic}” yet.</p>
-              <p className="mt-3 text-xs">
-                In admin → <strong>Posts</strong>, open your post, set{" "}
-                <strong>Category</strong> to “{activeTopic}”, set{" "}
-                <strong>Status</strong> to <strong>Published</strong>, then save.
-                Draft posts never appear on the site.
-              </p>
-            </>
+            <p>No published posts in “{activeTopic}” yet.</p>
           ) : (
             <p>No published posts yet.</p>
           )}
