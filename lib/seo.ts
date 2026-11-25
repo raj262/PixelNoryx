@@ -2,8 +2,15 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/lib/data";
 import type { PostSeoPayload, SeoPayload } from "@/lib/seo-types";
 
+/** Never fall back to localhost — Google treats that as the canonical and skips indexing. */
+export function getPublicSiteUrl(): string {
+  const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || "").trim().replace(/\/$/, "");
+  if (fromEnv && !/localhost|127\.0\.0\.1/i.test(fromEnv)) return fromEnv;
+  return "https://www.pixelnoryx.com";
+}
+
 const fallbackSeo: SeoPayload = {
-  siteUrl: "http://localhost:3000",
+  siteUrl: getPublicSiteUrl(),
   defaultTitle: `PixelNoryx | ${siteConfig.tagline}`,
   defaultDescription: siteConfig.description,
   defaultKeywords: ["tech magazine", "developer blog", "newsletter", "react", "laravel"],
@@ -23,7 +30,12 @@ const fallbackSeo: SeoPayload = {
 };
 
 export function resolveSeo(seo: SeoPayload | null): SeoPayload {
-  return seo ?? fallbackSeo;
+  const base = seo ?? fallbackSeo;
+  const siteUrl =
+    base.siteUrl && !/localhost|127\.0\.0\.1/i.test(base.siteUrl)
+      ? base.siteUrl.replace(/\/$/, "")
+      : getPublicSiteUrl();
+  return { ...base, siteUrl };
 }
 
 function robotsMeta(robots: string): Metadata["robots"] {

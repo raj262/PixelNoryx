@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBootstrap, getPostBySlug, fetchSeo } from "@/lib/cms";
 import SharePostButton from "@/components/magazine/SharePostButton";
-import { buildPostMetadata } from "@/lib/seo";
+import { buildPostMetadata, getPublicSiteUrl, resolveSeo } from "@/lib/seo";
+
 import PostCard from "@/components/magazine/PostCard";
 import Sidebar from "@/components/magazine/Sidebar";
 import PostMeta from "@/components/magazine/PostMeta";
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!issue) return { title: "Not Found" };
 
-  const siteUrl = seo?.siteUrl ?? "http://localhost:3000";
+  const siteUrl = resolveSeo(seo).siteUrl || getPublicSiteUrl();
   const title = issue.metaTitle?.trim() || issue.title;
   const description = issue.metaDescription?.trim() || issue.excerpt;
   const keywords =
@@ -61,8 +62,8 @@ export default async function IssuePage({ params }: PageProps) {
 
   const related = posts.filter((i) => i.slug !== slug).slice(0, 2);
   const seo = await fetchSeo();
-  const siteUrl = seo?.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const postUrl = `${siteUrl.replace(/\/$/, "")}/archive/${slug}`;
+  const siteUrl = resolveSeo(seo).siteUrl || getPublicSiteUrl();
+  const postUrl = `${siteUrl}/archive/${slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
