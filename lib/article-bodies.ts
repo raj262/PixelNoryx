@@ -3,6 +3,69 @@
  * Keeps public pages AdSense-ready even if admin content is short.
  */
 export const articleBodies: Record<string, string> = {
+  "php-november-2026-security-hack": `
+<h2>What happened</h2>
+<p>On <strong>19 November 2026</strong>, the PHP project shipped emergency security releases: <code>8.5.13</code>, <code>8.4.28</code>, <code>8.3.37</code>, and <code>8.2.36</code>. The batch fixes <strong>seven critical</strong> issues (several rated <strong>CVSS 9.2</strong>) plus multiple high-severity bugs. Several paths can end in <strong>remote code execution</strong>.</p>
+<p>Public write-ups and PoCs followed quickly. NHS Digital and hosting providers treated this as an active patching event — not a quiet changelog entry.</p>
+
+<h2>The scary one: PHP-FPM request smuggling (CVE-2026-129289)</h2>
+<p>This is the headline for most Laravel / Nginx / Apache stacks.</p>
+<p><strong>CVE-2026-129289</strong> — if PHP opens <code>php://input</code> but does not read the body to the end, leftover bytes can stay on a reused FastCGI connection. When the front end keeps the backend connection open (for example Nginx <code>fastcgi_keep_conn on</code>, or Apache <code>mod_proxy_fcgi</code> with reuse enabled), PHP-FPM may parse those leftover bytes as a <em>new</em> FastCGI request.</p>
+<p>An unauthenticated attacker can craft a multipart request that smuggles backend parameters such as <code>SCRIPT_FILENAME</code>, <code>REMOTE_ADDR</code>, or even <code>PHP_ADMIN_VALUE</code> — which can mean running attacker-controlled PHP.</p>
+<p><strong>Default Nginx/Apache often leave connection reuse off</strong>, which lowers exposure. Custom performance tweaks that enable keep-alive to PHP-FPM raise it sharply. Audit anyway — “we use Laravel Forge / default Nginx” is not a substitute for checking the config.</p>
+
+<pre><code># Look for FastCGI keep-alive (bad for this CVE)
+sudo grep -rn "fastcgi_keep_conn" /etc/nginx/
+</code></pre>
+
+<h2>Other critical RCEs in the same drop</h2>
+<ul>
+<li><strong>CVE-2026-129496</strong> — timezone cache use-after-free (file-based error_log + early warnings).</li>
+<li><strong>CVE-2026-126714</strong> — partially overwritten session files (default file sessions + interrupted write).</li>
+<li><strong>CVE-2026-115560</strong> — session serializer mismatch when <code>session.upload_progress</code> is on with a non-default serializer.</li>
+<li><strong>CVE-2026-129481</strong> — UAF after interrupted session shutdown (8.3–8.5).</li>
+<li><strong>CVE-2026-129474</strong> — UAF in magic-method backtraces on PHP 8.5 when <code>zend.exception_ignore_args=Off</code>.</li>
+<li><strong>CVE-2026-129182</strong> — related fatal-error backtrace UAF on 8.5.</li>
+</ul>
+<p>High-severity items also include FPM privilege escalation, PHAR signature bypass, mixed-case URL schemes leaking plaintext, and header folding DoS.</p>
+
+<h2>Fixed versions (patch targets)</h2>
+<ul>
+<li>PHP <strong>8.5.13</strong></li>
+<li>PHP <strong>8.4.28</strong></li>
+<li>PHP <strong>8.3.37</strong></li>
+<li>PHP <strong>8.2.36</strong></li>
+</ul>
+<p>EOL lines (8.1 and older) did not get new upstream minors in the same way — some distro packages backported fixes as package revisions. If you are still on 8.1 or below, patch packages <em>and</em> plan a move to a supported major.</p>
+
+<h2>Practical checklist for Laravel / PHP-FPM servers</h2>
+<ol>
+<li><strong>Inventory PHP</strong> — every version on the box (CLI + FPM), not only the one your main site uses.</li>
+<li><strong>Upgrade packages</strong> to the fixed versions above (apt / remi / sury / Forge “Update PHP”).</li>
+<li><strong>Restart FPM</strong> — package scripts usually do; verify with <code>php-fpmX.Y -v</code>.</li>
+<li><strong>Restart long-lived workers</strong> — queues, Horizon, Octane, Reverb, RoadRunner, custom daemons still hold the old binary until restart.</li>
+<li><strong>Remove <code>fastcgi_keep_conn on</code></strong> if present, then reload Nginx.</li>
+<li><strong>Confirm</strong> <code>php -v</code> / FPM version matches the advisory table.</li>
+</ol>
+
+<pre><code>php artisan queue:restart
+php artisan horizon:terminate
+# Octane / other supervisors: reload or restart per your process manager
+</code></pre>
+
+<h2>What this means for PixelNoryx readers</h2>
+<p>Most of us ship Laravel APIs behind Nginx + PHP-FPM. This advisory is not “only obscure shared hosts.” It is core runtime. Patching PHP is as important as patching Composer dependencies after a critical Laravel CVE.</p>
+<p>If you manage client servers: treat unpatched 8.2–8.5 as <strong>priority one</strong> until versions match the fixed list. If you cannot patch today, at least disable FastCGI connection reuse and reduce session/upload-progress attack surface — then patch within hours, not weeks.</p>
+
+<h2>Sources to follow</h2>
+<ul>
+<li>PHP project archive / changelogs for 19 Nov 2026</li>
+<li>Hosting provider advisories (e.g. Laravel Forge PHP security advisory)</li>
+<li>National CERT / CSOC alerts summarizing the same CVE set</li>
+</ul>
+<p><strong>Bottom line:</strong> upgrade PHP now, restart workers, kill FastCGI keep-alive if you enabled it, verify versions. Yesterday’s “stable” box is today’s exploit target.</p>
+`,
+
   "laravel-queues-production-guide": `
 <h2>Why localhost lies about queues</h2>
 <p>On a laptop, <code>php artisan queue:work</code> feels fine. In production, workers crash, jobs pile up, emails send twice, and timeouts kill half-finished imports. Reliability comes from explicit policies — not hoping Redis stays happy.</p>

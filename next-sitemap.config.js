@@ -21,8 +21,10 @@ module.exports = {
     ];
 
     const localArticleSlugs = [
+      "php-november-2026-security-hack",
       "laravel-queues-production-guide",
       "saas-pricing-page-that-converts",
+
       "multi-vendor-marketplace-playbook",
       "react-laravel-stack-2025",
       "dark-ui-that-converts",

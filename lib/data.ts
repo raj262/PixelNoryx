@@ -72,6 +72,39 @@ export const subscribeBenefits = [
 
 export const newsletterIssues: NewsletterIssue[] = [
   {
+    id: 11,
+    issueNumber: 45,
+    slug: "php-november-2026-security-hack",
+    title: "PHP Just Got Hit Hard: November 2026 RCE Flaws You Must Patch Now",
+    excerpt:
+      "Seven critical CVEs landed on 19 Nov 2026 — including PHP-FPM request smuggling that can mean unauthenticated remote code execution. Here is what broke, who is exposed, and how to patch.",
+    preview:
+      "If your servers still run unpatched PHP 8.2–8.5, treat this week like an incident — not a nice-to-have upgrade.",
+    content:
+      "Coverage of the November 2026 PHP security release: CVE-2026-129289 request smuggling, session/UAF RCEs, fixed versions, and a practical patch checklist for Laravel and PHP-FPM stacks.",
+    image:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=80",
+    topic: "Laravel",
+    author: "Rajesh Verma",
+    authorRole: "Founder, PixelNoryx",
+    date: "Nov 25, 2026",
+    readTime: "10 min read",
+    tags: ["PHP", "Security", "CVE", "Laravel", "DevOps"],
+    featured: true,
+    free: true,
+    commentCount: 0,
+    metaTitle: "PHP November 2026 Security Hack: Patch CVE-2026-129289 RCE Now",
+    metaDescription:
+      "November 2026 PHP advisory explained: PHP-FPM request smuggling RCE, critical CVEs, fixed versions (8.5.13 / 8.4.28 / 8.3.37 / 8.2.36), and a patch checklist for production servers.",
+    metaKeywords: [
+      "PHP security November 2026",
+      "CVE-2026-129289",
+      "PHP-FPM request smuggling",
+      "PHP RCE patch",
+      "Laravel PHP update",
+    ],
+  },
+  {
     id: 10,
     issueNumber: 44,
     slug: "laravel-queues-production-guide",
@@ -90,10 +123,11 @@ export const newsletterIssues: NewsletterIssue[] = [
     date: "Nov 18, 2026",
     readTime: "9 min read",
     tags: ["Laravel", "Queues", "DevOps", "PHP"],
-    featured: true,
+    featured: false,
     free: true,
     commentCount: 0,
     metaTitle: "Laravel Queues in Production: Retries, Timeouts & Failed Jobs",
+
     metaDescription:
       "Ship reliable Laravel queue workers: retry budgets, timeout settings, failed jobs, Horizon tips, and a production checklist for background processing.",
     metaKeywords: [
