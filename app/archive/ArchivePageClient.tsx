@@ -29,7 +29,8 @@ function ArchiveGrid() {
       setLoading(true);
       const live = await fetchPublishedPosts(activeTopic);
       if (cancelled) return;
-      setPosts(live);
+      // Keep bootstrap posts if the live fetch is empty (dead API / cold DB).
+      setPosts(live.length > 0 ? live : bootstrapPosts);
       setLoading(false);
     }
 
@@ -38,13 +39,15 @@ function ArchiveGrid() {
     return () => {
       cancelled = true;
     };
-  }, [activeTopic]);
+  }, [activeTopic, bootstrapPosts]);
 
   const filtered = useMemo(() => {
     if (!activeTopic) {
       return posts;
     }
-    return posts.filter((i) => i.topic === activeTopic);
+    return posts.filter(
+      (i) => i.topic.toLowerCase() === activeTopic.toLowerCase()
+    );
   }, [activeTopic, posts]);
 
   return (

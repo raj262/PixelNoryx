@@ -1,7 +1,16 @@
 import { enrichPostContent } from "@/lib/article-bodies";
-import { clientApiFetch } from "@/lib/api-fetch";
+import { newsletterIssues } from "@/lib/data";
 import { normalizeMediaUrl } from "@/lib/media";
 import type { NewsletterIssue } from "@/lib/types";
+
+function localPublishedPosts(topic?: string): NewsletterIssue[] {
+  let posts = newsletterIssues.map((post) => enrichPostContent({ ...post }));
+  if (topic?.trim()) {
+    const t = topic.trim().toLowerCase();
+    posts = posts.filter((p) => p.topic.toLowerCase() === t);
+  }
+  return posts;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapPost(raw: any): NewsletterIssue {
@@ -24,21 +33,34 @@ function mapPost(raw: any): NewsletterIssue {
     free: raw.free !== false,
     sponsored: Boolean(raw.sponsored ?? raw.is_sponsored),
     commentCount: raw.commentCount ?? raw.comment_count ?? 0,
+    metaTitle: raw.metaTitle ?? raw.meta_title,
+    metaDescription: raw.metaDescription ?? raw.meta_description,
+    metaKeywords: raw.metaKeywords ?? raw.meta_keywords,
   });
 }
 
-/** Fresh published posts from the API (bypasses Next.js build cache). */
+/**
+ * Fresh published posts for archive filters.
+ * Uses same-origin /api/posts (Neon + local). Never clears the page on API failure.
+ */
 export async function fetchPublishedPosts(topic?: string): Promise<NewsletterIssue[]> {
   const params = new URLSearchParams({ per_page: "100" });
   if (topic?.trim()) {
     params.set("topic", topic.trim());
   }
 
-  const res = await clientApiFetch(`/posts?${params.toString()}`);
-  if (!res.ok) {
-    return [];
+  try {
+    const res = await fetch(`/api/posts?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = (await res.json()) as { data?: unknown[] };
+      const mapped = (json.data ?? []).map(mapPost);
+      if (mapped.length > 0) return mapped;
+    }
+  } catch {
+    // fall through to local
   }
 
-  const json = (await res.json()) as { data?: unknown[] };
-  return (json.data ?? []).map(mapPost);
+  return localPublishedPosts(topic);
 }
